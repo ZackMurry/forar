@@ -5,6 +5,8 @@ import com.zackmurry.forar.models.Post;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class PostService {
 
@@ -15,5 +17,11 @@ public class PostService {
         postDao.createPost(post);
     }
 
+    public String getAllPosts() {
+        return postDao.getAllPosts();
+    }
 
+    public String getRandomPost() {
+        return postDao.getRandomPost();
+    }
 }
