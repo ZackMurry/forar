@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 @EnableWebSecurity
@@ -19,20 +20,32 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        //auth.userDetailsService(userDetailsService);
+        auth.inMemoryAuthentication()
+                    .withUser("username")
+                    .password("password")
+                    .roles("USER")
+                    .and()
+                    .withUser("foo")
+                    .password("bar")
+                    .roles("ADMIN");
+
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .anyRequest().permitAll();
+                .antMatchers("/account").hasAnyRole("USER", "ADMIN")
+                .antMatchers("/").permitAll()
+                .and()
+                .formLogin();
     }
 
 
     @Bean
     public PasswordEncoder getPasswordEncoder() {
-        return new BCryptPasswordEncoder();
+        return NoOpPasswordEncoder.getInstance(); //todo encrypt
     }
 
 }
