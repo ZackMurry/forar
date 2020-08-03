@@ -3,20 +3,26 @@ import MainPage from './components/MainPage'
 import SomePage from './components/SomePage'
 import Error from './components/Error'
 import NavigationBar from './components/NavigationBar'
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { HashRouter, Route, Switch } from 'react-router-dom';
 
 function App() {
+
+  const nopad = {
+    padding: 0,
+    margin: 0
+  };
+
   return (
-    <BrowserRouter>
+    <HashRouter>
         <NavigationBar />
-        <main>
+        <main style={nopad}>
             <Switch>
                 <Route path="/" component={MainPage} exact />
                 <Route path="/about" component={SomePage} />
                 <Route component={Error} />
             </Switch>
         </main>
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 

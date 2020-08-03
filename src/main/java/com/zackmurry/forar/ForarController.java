@@ -11,6 +11,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 
+//todo make /login link to the spring security thing. or custom design it.
 @Controller
 public class ForarController {
 
