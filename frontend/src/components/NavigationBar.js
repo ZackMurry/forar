@@ -55,8 +55,7 @@ class NavigationBar extends React.Component {
       return (
         <ThemeProvider theme={theme}>
           <div>
-            <div>
-              <AppBar position="static" style={{padding:6}}>
+              <AppBar position="static" style={{minHeight: '7vh'}}>
                 <Toolbar>
                   <img src={Logo} style={{paddingRight:10}} alt="icon-white"/>
                   <Typography variant="h4" style={style}>
@@ -70,15 +69,6 @@ class NavigationBar extends React.Component {
                   </Button>
                 </Toolbar>
               </AppBar>
-            </div>
-      
-            <h1>Main page text</h1>
-            <Button color="primary">Hello world</Button>
-
-            <div>
-              <Link to="/">Home </Link>
-              <Link to="/about">About Us </Link>
-            </div>
           </div>
 
         </ThemeProvider>

@@ -9,8 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
-
 //todo make /login link to the spring security thing. or custom design it.
 @Controller
 public class ForarController {
@@ -21,11 +19,6 @@ public class ForarController {
     @Autowired
     private PostService postService;
 
-    /*@GetMapping("/")
-    public ModelAndView home() {
-        ModelAndView model = new ModelAndView("HomePage");
-        return model;
-    }*/
 
     @GetMapping("/post/{title}")
     public ModelAndView post(@PathVariable("title") String title) {

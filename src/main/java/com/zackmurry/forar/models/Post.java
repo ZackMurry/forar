@@ -12,7 +12,7 @@ import java.util.UUID;
 public class Post {
 
     @Id
-    private UUID id;
+    private int id;
 
     @Column
     private String title;
@@ -30,7 +30,7 @@ public class Post {
     private Timestamp timestamp; //when the post was created
 
 
-    public Post(UUID id, String title, String body, int votes, String username, Timestamp timestamp) {
+    public Post(int id, String title, String body, int votes, String username, Timestamp timestamp) {
         this.id = id;
         this.title = title;
         this.body = body;
@@ -57,11 +57,11 @@ public class Post {
         this.timestamp = new Timestamp(System.currentTimeMillis());
     }
 
-    public UUID getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(UUID id) {
+    public void setId(int id) {
         this.id = id;
     }
 

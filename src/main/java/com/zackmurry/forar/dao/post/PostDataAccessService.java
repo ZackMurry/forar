@@ -7,13 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.*;
 
-@Repository
+@Service
 public class PostDataAccessService implements PostDao {
 
     private final JdbcTemplate jdbcTemplate;

@@ -4,11 +4,12 @@ import com.zackmurry.forar.models.User;
 import org.flywaydb.core.internal.jdbc.JdbcTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
 
-@Repository
+@Service
 public class UserDataAccessService implements UserDao {
 
     private final JdbcTemplate jdbcTemplate;

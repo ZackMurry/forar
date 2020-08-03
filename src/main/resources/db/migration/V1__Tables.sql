@@ -6,7 +6,7 @@ CREATE TABLE users (
 );
 
 CREATE TABLE posts (
-    id uuid DEFAULT uuid_generate_v4 (),
+    id BIGSERIAL NOT NULL,
     title VARCHAR(400) NOT NULL,
     body VARCHAR(5000) NOT NULL,
     votes INT NOT NULL DEFAULT 0,
