@@ -7,9 +7,4 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 @ControllerAdvice
 public class PageNotFoundController {
 
-    /*@ExceptionHandler(NoHandlerFoundException.class)
-    public String handleError() {
-        return "redirect:/index.html";
-    }
-*/
 }

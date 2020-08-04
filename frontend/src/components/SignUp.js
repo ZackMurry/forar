@@ -2,7 +2,7 @@ import React from 'react'
 import { Paper, Typography, Grid, Input, InputLabel, Button } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
-import axios from 'axios'
+
 
 var theme = createMuiTheme({
     palette: {
@@ -13,44 +13,33 @@ var theme = createMuiTheme({
     },
   });
 
-export default class Login extends React.Component {
+export default class SignUp extends React.Component {
 
     constructor() {
         super()
         this.state = {
-            username: "username_default",
-            password: "password_default"
+            username: "",
+            password: ""
         }
+        this.handleChange = this.handleChange.bind(this)
     }
 
-    handleChangeUsername = (event) => {
+    handleChange(event) {
         this.setState({
-            'username': event.target.value,
-            'password': this.state.password
+            [event.target.name]: event.target.value,
         })
-        console.log(this.state.username)
-    }
-
-    handleChangePassword = (event) => {
-        this.setState({
-            'username': this.state.username,
-            'password': event.target.value
-        })
-        console.log(this.state.password)
+        console.log(event.target.value)
     }
     
     handleSubmit = () => {
-        console.log('submit')
         console.log(this.state.username)
-        const response = axios.get('api/v1/authenticateUser',{
-                'username': this.state.username.value,
-                'password': this.state.password.value
-        })
-        console.log(response)
-
+        
     }
 
+    
+
     render() {
+
         return(
             <div>
                 <ThemeProvider theme={theme}>
@@ -62,16 +51,17 @@ export default class Login extends React.Component {
                         >
                             <Paper elevation={5} style={{margin:'0%', padding:50, alignContent:'center', textAlign:'center'}}>
                                 <Typography variant="h5" component="h3" style={{textAlign:'center'}}> 
-                                Login
+                                Sign up
                                 </Typography>
                                 <form 
+                                    onSubmit={this.handleSubmit}
                                     style={{paddingTop: 12, paddingBottom:12}}
                                 >
                                     <InputLabel htmlFor='username'>Username</InputLabel>
-                                    <Input id='username' type='text' onChange={e => this.handleChangeUsername(e)}/>
+                                    <Input id='username' type='text' onChange={event => this.handleChange(event)}/>
     
                                     <InputLabel htmlFor='password' style={{marginTop:12}}>Password</InputLabel>
-                                    <Input id='password' type='password' color="primary" onChange={e => this.handleChangePassword(e)}/>
+                                    <Input id='password' type='password' color="primary" onChange={event => this.handleChange(event)}/>
                                     
                                     <br />
                                     
@@ -80,7 +70,7 @@ export default class Login extends React.Component {
                                         color='primary' 
                                         text='submit' 
                                         style={{color:'#ffffff', marginTop: 20}}
-                                        onClick={this.handleSubmit}
+                                        onSubmit={this.handleSubmit}
                                         >
                                         Submit
                                     </Button>
@@ -92,12 +82,9 @@ export default class Login extends React.Component {
                 
                 
             </div>
-            
-            
-        )
-    }
-    
-    
 
+        )
+
+    }
     
 }

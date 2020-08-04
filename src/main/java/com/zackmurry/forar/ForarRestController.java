@@ -3,10 +3,7 @@ package com.zackmurry.forar;
 import com.zackmurry.forar.services.PostService;
 import com.zackmurry.forar.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -32,4 +29,12 @@ public class ForarRestController {
     public String test() {
         return "This is a very cool test.";
     }
+
+
+    @GetMapping("/authenticateUser")
+    public boolean authenticateUser(@RequestBody ProtoUser protoUser) { //todo doesn't work. maybe make this an anonymous chat w pseudo names
+        System.out.println(protoUser.getUsername() + "; " + protoUser.getPassword());
+        return true;
+    }
+
 }

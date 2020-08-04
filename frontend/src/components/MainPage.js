@@ -1,5 +1,4 @@
 import React from 'react'
-import NavigationBar from './NavigationBar';
 
 
 class MainPage extends React.Component {
