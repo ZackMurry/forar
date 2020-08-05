@@ -7,6 +7,13 @@ import Login from './components/Login'
 import { HashRouter, Route, Switch } from 'react-router-dom'
 import AccountPage from './components/Account.'
 import SignUp from './components/SignUp'
+import { CookiesProvider } from 'react-cookie'
+
+const config = {
+  issuer: 'http://localhost:8080/login/oauth2/code/okta',
+  redirect_uri: window.location.origin + '/implicit/callback',
+  client_id: '0oaolzlceKJBBmFQL4x6'
+};
 
 function App() {
 
@@ -16,7 +23,8 @@ function App() {
   };
 
   return (
-    <HashRouter>
+    <CookiesProvider>
+      <HashRouter>
         <NavigationBar />
         <main style={nopad}>
             <Switch>
@@ -28,7 +36,9 @@ function App() {
                 <Route component={Error} />
             </Switch>
         </main>
-    </HashRouter>
+      </HashRouter>
+    </CookiesProvider>
+    
   )
 }
 
