@@ -6,6 +6,7 @@ import com.zackmurry.forar.models.Post;
 import com.zackmurry.forar.models.User;
 import com.zackmurry.forar.services.PostService;
 import com.zackmurry.forar.services.UserService;
+import org.ietf.jgss.Oid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
@@ -72,13 +74,27 @@ public class ForarRestController {
 
     private ClientRegistration registration;
 
+    @GetMapping("/account/create")
+    public String createUser(@AuthenticationPrincipal OidcUser user) {
+        System.out.println(user);
+        return "test for rn";
+    }
+
+    @GetMapping("/loggedIn")
+    public String isLoggedIn(@AuthenticationPrincipal OidcUser user) {
+        if(user == null)
+            return "false";
+        return "true";
+    }
+
     @GetMapping("/user")
-    public ResponseEntity<?> getUser(@AuthenticationPrincipal OAuth2User user) {
-        if (user == null) {
-            return new ResponseEntity<>("", HttpStatus.OK);
-        } else {
-            return ResponseEntity.ok().body(user.getAttributes());
+    public String getUser(@AuthenticationPrincipal OidcUser user) {
+        System.out.println(user);
+        if(user == null) {
+            System.out.println("null user");
+            return " ";
         }
+        return user.getGivenName() + " " + user.getFamilyName();
     }
 
     @PostMapping("/logout")

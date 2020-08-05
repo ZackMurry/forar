@@ -21,13 +21,14 @@ class MainPage extends React.Component {
   }
 
   async componentDidMount() {
-    const response = await fetch('/api/v1/user', {credentials: 'include'});
+    const response = await fetch('/api/v1/user');
     const body = await response.text();
-    if (body === '') {
+    console.log(body)
+    console.log(response)
+    if (body === ' ') {
       this.setState(({isAuthenticated: false}))
     } else {
-      console.log(body)
-      this.setState({isAuthenticated: true, user: JSON.parse(body)})
+      this.setState({isAuthenticated: true, user: body})
     }
   }
 
@@ -36,9 +37,7 @@ class MainPage extends React.Component {
     if (port === ':3000') {
       port = ':8080';
     }
-    //window.location.href = '//' + window.location.hostname + port + '/login/oauth2/default';
-    window.location.href = 'https://dev-750825.okta.com/oauth2/default'
-  
+    window.location.href = '//' + window.location.hostname + port + '/login';
   }
 
   logout() {
@@ -51,13 +50,14 @@ class MainPage extends React.Component {
   }
 
   render() {
-    const message = this.state.user ?
-      <h2>Welcome, {this.state.user.name}!</h2> :
-      <p>Please log in to manage your JUG Tour.</p>;
+
+    console.log(this.state.isAuthenticated)
+    const message = this.state.isAuthenticated ?
+      <h2>Welcome, {this.state.user}!</h2> :
+      <p>Please log in to post.</p>;
 
     const button = this.state.isAuthenticated ?
       <div>
-        <Button color="link"><Link to="/posts">Manage JUG Tour</Link></Button>
         <br/>
         <Button color="link" onClick={this.logout}>Logout</Button>
       </div> :
