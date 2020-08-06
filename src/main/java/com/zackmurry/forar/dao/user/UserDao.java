@@ -10,4 +10,6 @@ public interface UserDao {
 
     void addUser(User user);
 
+    boolean hasUserWithUsername(String username);
+
 }

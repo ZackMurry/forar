@@ -9,30 +9,21 @@ public class User {
     @Id
     private String username;
 
-    @Column
-    private String password;
-
     @Column(name="account_role")
     private String role;
 
-    public User(String username, String password, String role) {
+    public User(String username, String role) {
         this.username = username;
-        this.password = password;
         this.role = role;
     }
 
-    public User(String username, String password) {
+    public User(String username) {
         this.username = username;
-        this.password = password;
         this.role = "USER";
     }
 
     public String getUsername() {
         return username;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getRole() {

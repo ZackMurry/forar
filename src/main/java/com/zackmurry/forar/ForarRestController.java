@@ -61,7 +61,7 @@ public class ForarRestController {
     }
 
     @GetMapping("/test")
-    public String test() {
+    public String test(@AuthenticationPrincipal OidcUser user) {
         return "This is a very cool test.";
     }
 
@@ -89,11 +89,18 @@ public class ForarRestController {
 
     @GetMapping("/user")
     public String getUser(@AuthenticationPrincipal OidcUser user) {
-        System.out.println(user);
+
         if(user == null) {
             System.out.println("null user");
             return " ";
         }
+        String username = user.getGivenName() + " " + user.getFamilyName();
+
+        //if we don't have the user in the database, add it
+        if(!userService.hasUserWithUsername(username)) {
+            userService.addUser(new User(username));
+        }
+
         return user.getGivenName() + " " + user.getFamilyName();
     }
 

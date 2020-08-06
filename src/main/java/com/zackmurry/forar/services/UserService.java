@@ -15,4 +15,8 @@ public class UserService {
         userDao.addUser(user);
     }
 
+    public boolean hasUserWithUsername(String username) {
+        return userDao.hasUserWithUsername(username);
+    }
+
 }

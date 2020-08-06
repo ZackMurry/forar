@@ -55,7 +55,8 @@ class NavigationBar extends React.Component {
     if (port === ':3000') {
       port = ':8080';
     }
-    window.location.href = '//' + window.location.hostname + port + '/login';
+    //window.location.href = '//' + window.location.hostname + port + '/login';
+    window.location.href = '//' + window.location.hostname + port + '/oauth2/authorization/okta';
   }
 
   logout() {

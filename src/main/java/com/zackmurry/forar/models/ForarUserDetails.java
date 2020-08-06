@@ -13,7 +13,6 @@ import java.util.stream.Collectors;
 public class ForarUserDetails implements UserDetails {
 
     private String username;
-    private String password;
     private List<GrantedAuthority> authorities;
 
     public ForarUserDetails(String username) {
@@ -22,7 +21,6 @@ public class ForarUserDetails implements UserDetails {
 
     public ForarUserDetails(User user) {
         this.username = user.getUsername();
-        this.password = user.getPassword();
         this.authorities = Arrays.stream(user.getRole().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -36,7 +34,8 @@ public class ForarUserDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return password;
+        System.out.println("this shouldn't be being used. in ForarUserDetails.jav");
+        return "ERROR";
     }
 
     @Override
