@@ -2,7 +2,7 @@ import React from 'react'
 import { Container } from '@material-ui/core'
 import { withCookies} from 'react-cookie';
 import { withRouter } from 'react-router-dom'
-import CreatePostForm from './CreatePostForm';
+import CreatePostForm from './CreatePostForm/CreatePostForm.js';
 
 class MainPage extends React.Component {
   

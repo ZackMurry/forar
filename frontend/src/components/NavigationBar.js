@@ -29,7 +29,7 @@ class NavigationBar extends React.Component {
     const body = await response.text();
     console.log(body)
     console.log(response)
-    if (body === ' ') {
+    if (body === ' ' || body === null) {
       this.setState(({isAuthenticated: false}))
     } else {
       this.setState({isAuthenticated: true, user: body})
