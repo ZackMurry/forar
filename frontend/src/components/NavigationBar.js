@@ -1,24 +1,14 @@
 import React from 'react'
-import { Link, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 import { Button, Toolbar, ThemeProvider } from '@material-ui/core'
 import {AppBar, Typography } from '@material-ui/core'
-import { createMuiTheme } from '@material-ui/core/styles';
 import { withCookies} from 'react-cookie';
-import { green } from '@material-ui/core/colors';
-
+import  theme from './../theme'
 
 import { Redirect } from "react-router-dom";
 
 var Logo = './ForarIconWhite.png'
 
-var theme = createMuiTheme({
-  palette: {
-    primary: green,
-    secondary: {
-      main: '#4caf50'
-    }
-  },
-});
 
 class NavigationBar extends React.Component {
 
