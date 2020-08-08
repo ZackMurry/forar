@@ -20,7 +20,7 @@ class MainPage extends React.Component {
 
     return (
       <div>
-        <Container fluid>
+        <Container fluid='true'>
           {message}
         </Container>
         <CreatePostForm />
