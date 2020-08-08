@@ -1,7 +1,7 @@
 import React from 'react'
 import { Editor, EditorState, RichUtils } from 'draft-js'
 import './../../styles.css'
-import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input } from '@material-ui/core'
+import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input, setRef } from '@material-ui/core'
 import theme from '../../theme'
 import { green } from '@material-ui/core/colors'
 import CreateTitleFormEditor from './CreateTitleFormEditor.js'
@@ -14,7 +14,7 @@ import * as Yup from 'yup'
 //todo pasting allows for text above char limit
 //todo add snackbar on post upload
 //todo placeholder text loads before transition
-
+//todo title field looking wack. maybe use a mui component or something
 
 
 export default class CreatePostForm extends React.Component {
@@ -32,7 +32,7 @@ export default class CreatePostForm extends React.Component {
 
     //have to do this because draft.js doesn't have functionality for transitions with placeholder text
     //before the placeholder would appear before the accordion dropped down
-    handleChange = () => {
+    _handleChange = () => {
         if(this.state.showBodyPlaceholder) {
             setTimeout(this.switchShowBodyPlaceholder, 100)
         }
@@ -62,26 +62,41 @@ export default class CreatePostForm extends React.Component {
         console.log(values)
     }
 
+    async sendToServer(titleText, bodyText) {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                title: titleText,
+                body: bodyText
+            })
+        }
+        console.log(requestOptions.body)
+        var response = fetch('/api/v1/posts/create', requestOptions)
+        console.log(response)
+
+    }
+
     render() {
         
         const formikEnhancer = withFormik({
             mapPropsToValues: props => ({
-              editorState: new EditorState.createEmpty(),
-              title: '',
+                title: '',
+                editorState: new EditorState.createEmpty()
             }),
             validationSchema: Yup.object().shape({
               title: Yup.string(),
             }),
             handleSubmit: (values, { setSubmitting }) => {
               setTimeout(() => {
-                // you probably want to transform draftjs state to something else, but I'll leave that to you.
-                //temporary
-                var temp = values.editorState._immutable.currentContent.blockMap._list._tail.array;
-                var temp2 = temp[0];
-                var temp3 = temp2[1]
-                var temp4 = temp3._map._root.entries
-                var temp5 = temp4[1]
-                console.log(temp5)
+                var tailArray = values.editorState._immutable.currentContent.blockMap._list._tail.array;
+                var innerArray = tailArray[0];
+                var contentBlock = innerArray[1]
+                var entries = contentBlock._map._root.entries
+                var textEntry = entries[1]
+                var bodyText = textEntry[1]
+                var titleText = values.title
+                this.sendToServer(titleText, bodyText)
                 setSubmitting(false);
               }, 1000);
             },
@@ -101,8 +116,8 @@ export default class CreatePostForm extends React.Component {
             isSubmitting,
         }) => (
             <form onSubmit={handleSubmit}>
-                    <CreateTitleFormEditor placeholder={this.state.showTitlePlaceholder ? 'Title' : ''} onChange={setFieldValue}/>
-                    <CreateBodyFormEditor placeholder={this.state.showBodyPlaceholder ? 'Body' : ''}/>
+                    <input id='title' placeholder='Title' type='text' value={values.title} onChange={handleChange} />
+                    <CreateBodyFormEditor placeholder={this.state.showBodyPlaceholder ? 'Body' : ''} onChange={setFieldValue} editorState={values.editorState}/>
                     <Button variant='contained' style={{margin: 25, marginTop: 5, float: 'right'}} color='primary' type='submit'>
                     <Typography style={{color: 'white'}}>
                         Submit
@@ -117,7 +132,7 @@ export default class CreatePostForm extends React.Component {
 
         return (
             <ThemeProvider theme={theme}>
-                <Accordion style={{width: '40%', backgroundColor: green[500], margin: 'auto'}} elevation={5} onChange={this.handleChange}>
+                <Accordion style={{width: '40%', backgroundColor: green[500], margin: 'auto'}} elevation={5} onChange={this._handleChange}>
                    <AccordionSummary expandIcon={<ExpandMoreIcon style={{fill: 'white'}}/>}>
                         <Typography variant='h6' style={{color: 'white'}}>
                             Create post

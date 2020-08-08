@@ -1,4 +1,4 @@
-package com.zackmurry.forar;
+package com.zackmurry.forar.controller;
 
 import com.zackmurry.forar.models.Post;
 import com.zackmurry.forar.services.PostService;
@@ -19,7 +19,7 @@ public class ForarController {
     @Autowired
     private PostService postService;
 
-
+    //todo move this to api/v1 and return a json object with details for react to load
     @GetMapping("/post/{title}")
     public ModelAndView post(@PathVariable("title") String title) {
         postService.createPost(new Post(title, "I hope this works.", "FirstPoster"));

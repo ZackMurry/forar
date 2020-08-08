@@ -1,7 +1,7 @@
 import React from 'react'
 import { EditorState, RichUtils, Editor } from 'draft-js'
 
-const MAX_LENGTH = 400
+const MAX_LENGTH = 125
 
 export default class CreateTitleFormEditor extends React.Component {
 
@@ -13,11 +13,11 @@ export default class CreateTitleFormEditor extends React.Component {
     }
 
     onChange = (newEditorState) => {
-        this.setState({editorState: newEditorState})
+        this.props.onChange('editorState', newEditorState);
     }
 
     handleKeyCommand = (command) => {
-        const newState = RichUtils.handleKeyCommand(this.state.editorState, command)
+        const newState = RichUtils.handleKeyCommand(this.props.editorState, command)
         
         if(newState) {
             this.onChange(newState)
@@ -28,7 +28,7 @@ export default class CreateTitleFormEditor extends React.Component {
     }
 
     _handleBeforeInput = () => {
-        const currentContent = this.state.editorState.getCurrentContent();
+        const currentContent = this.props.editorState.getCurrentContent();
         const currentContentLength = currentContent.getPlainText('').length
       
         if (currentContentLength > MAX_LENGTH - 1) {
@@ -42,7 +42,7 @@ export default class CreateTitleFormEditor extends React.Component {
         return (
             <div className="titleEditor">
                 <Editor                      
-                    editorState={this.state.editorState}
+                    editorState={this.props.editorState}
                     onChange={this.onChange}
                     handleKeyCommand={this.handleKeyCommand}
                     editorStyle={{fontSize: 40, fontFamily: 'Roboto'}}

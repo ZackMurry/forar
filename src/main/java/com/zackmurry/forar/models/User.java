@@ -6,6 +6,7 @@ import javax.persistence.*;
 @Table(name="users")
 public class User {
 
+    //todo use email address as unique field bc that's what okta already does and some people probably have the same names
     @Id
     private String username;
 

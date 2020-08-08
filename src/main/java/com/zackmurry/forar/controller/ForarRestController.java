@@ -1,5 +1,6 @@
-package com.zackmurry.forar;
+package com.zackmurry.forar.controller;
 
+import com.zackmurry.forar.ProtoUser;
 import com.zackmurry.forar.dao.post.PostRepository;
 import com.zackmurry.forar.dao.user.UserRepository;
 import com.zackmurry.forar.models.Post;
@@ -94,14 +95,14 @@ public class ForarRestController {
             System.out.println("null user");
             return " ";
         }
-        String username = user.getGivenName() + " " + user.getFamilyName();
+        String username = user.getFullName();
 
         //if we don't have the user in the database, add it
         if(!userService.hasUserWithUsername(username)) {
             userService.addUser(new User(username));
         }
 
-        return user.getGivenName() + " " + user.getFamilyName();
+        return username;
     }
 
     @PostMapping("/logout")
