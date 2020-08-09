@@ -1,10 +1,9 @@
 import React from 'react'
 import { Editor, EditorState, RichUtils } from 'draft-js'
 import './../../styles.css'
-import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input, setRef } from '@material-ui/core'
+import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input, setRef, TextField } from '@material-ui/core'
 import theme from '../../theme'
 import { green } from '@material-ui/core/colors'
-import CreateTitleFormEditor from './CreateTitleFormEditor.js'
 import CreateBodyFormEditor from './CreateBodyFormEditor.js'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { withFormik } from 'formik'
@@ -13,20 +12,17 @@ import * as Yup from 'yup'
 //todo figure out how to use roboto lol
 //todo pasting allows for text above char limit
 //todo add snackbar on post upload
-//todo placeholder text loads before transition
-//todo title field looking wack. maybe use a mui component or something
 
+const MAX_TITLE_LENGTH = 125
 
-export default class CreatePostForm extends React.Component {
+class CreatePostForm extends React.Component {
 
     constructor() {
         super()
         this.state = {
-            showBodyPlaceholder: false,
-            showTitlePlaceholder: false
+            showBodyPlaceholder: false
         }
         this.switchShowBodyPlaceholder = this.switchShowBodyPlaceholder.bind(this)
-        this.switchShowTitlePlaceholder = this.switchShowTitlePlaceholder.bind(this)
     }
 
 
@@ -34,28 +30,16 @@ export default class CreatePostForm extends React.Component {
     //before the placeholder would appear before the accordion dropped down
     _handleChange = () => {
         if(this.state.showBodyPlaceholder) {
-            setTimeout(this.switchShowBodyPlaceholder, 100)
-        }
-        else {
             setTimeout(this.switchShowBodyPlaceholder, 110)
         }
-
-        if(this.state.showTitlePlaceholder) {
-            setTimeout(this.switchShowTitlePlaceholder, 200)
-        }
         else {
-            setTimeout(this.switchShowTitlePlaceholder, 50)
+            setTimeout(this.switchShowBodyPlaceholder, 90)
         }
     }
 
     switchShowBodyPlaceholder = () => {
         var showBody = !this.state.showBodyPlaceholder
         this.setState({showBodyPlaceholder: showBody})
-    }
-
-    switchShowTitlePlaceholder = () => {
-        var showTitle = !this.state.showTitlePlaceholder
-        this.setState({showTitlePlaceholder: showTitle})
     }
 
     bhandleSubmit = (values) => {
@@ -79,6 +63,7 @@ export default class CreatePostForm extends React.Component {
 
     render() {
         
+
         const formikEnhancer = withFormik({
             mapPropsToValues: props => ({
                 title: '',
@@ -116,11 +101,28 @@ export default class CreatePostForm extends React.Component {
             isSubmitting,
         }) => (
             <form onSubmit={handleSubmit}>
-                    <input id='title' placeholder='Title' type='text' value={values.title} onChange={handleChange} />
-                    <CreateBodyFormEditor placeholder={this.state.showBodyPlaceholder ? 'Body' : ''} onChange={setFieldValue} editorState={values.editorState}/>
-                    <Button variant='contained' style={{margin: 25, marginTop: 5, float: 'right'}} color='primary' type='submit'>
+                <TextField 
+                    multiline 
+                    id='title' 
+                    type='text' 
+                    placeholder='Title' 
+                    onChange={handleChange} 
+                    rows={3}
+                    rowsMax={6}
+                    className='titleEntry'
+                    style={{margin: '2.5%', width:'95%'}}
+                    InputProps={{
+                        style: {fontSize: 24},
+                        disableUnderline: true
+                    }}
+                    onInput = {(e) =>{
+                        e.target.value = e.target.value.slice(0, MAX_TITLE_LENGTH)
+                    }}
+                />
+                <CreateBodyFormEditor placeholder={this.state.showBodyPlaceholder ? 'Body' : ''} onChange={setFieldValue} editorState={values.editorState}/>
+                <Button variant='contained' style={{margin: 25, marginTop: 5, float: 'right'}} color='primary' type='submit' disabled={!this.state.isAuthenticated}>
                     <Typography style={{color: 'white'}}>
-                        Submit
+                        {this.state.isAuthenticated ? 'Submit' : 'Sign in to post'}
                     </Typography>
                 </Button>
             </form>
@@ -153,3 +155,5 @@ export default class CreatePostForm extends React.Component {
 
 
 }
+
+export default CreatePostForm

@@ -1,6 +1,7 @@
 .public-DraftEditorPlaceholder-root {
   position: absolute;
-  color: #bdbdbd
+  color: #bdbdbd;
+  font-family: 'Roboto'
 }
 
 div.DraftEditor-root {
@@ -17,6 +18,7 @@ div.DraftEditor-editorContainer,
 div.public-DraftEditor-content {
   height: 100%;
   font-size: 24;
+  font-family: 'Roboto'
 }
 
 .bodyEditor {

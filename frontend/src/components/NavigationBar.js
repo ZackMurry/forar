@@ -4,7 +4,6 @@ import { Button, Toolbar, ThemeProvider } from '@material-ui/core'
 import {AppBar, Typography } from '@material-ui/core'
 import { withCookies} from 'react-cookie';
 import  theme from './../theme'
-
 import { Redirect } from "react-router-dom";
 
 var Logo = './ForarIconWhite.png'
@@ -23,6 +22,7 @@ class NavigationBar extends React.Component {
     this.login = this.login.bind(this);
     this.logout = this.logout.bind(this);
   }
+
 
   async componentDidMount() {
     const response = await fetch('/api/v1/user');
@@ -101,5 +101,6 @@ class NavigationBar extends React.Component {
   }
     
 }
+
 
 export default withCookies(withRouter(NavigationBar))
