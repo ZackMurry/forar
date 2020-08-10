@@ -8,6 +8,10 @@ import { HashRouter, Route, Switch } from 'react-router-dom'
 import AccountPage from './components/Account.js'
 import SignUp from './components/SignUp'
 import { CookiesProvider } from 'react-cookie'
+import { GlobalProvider } from './context/GlobalState'
+import { ThemeProvider } from '@material-ui/core'
+import {theme} from './theme'
+import UserPage from './components/UserPage'
 
 const config = {
   issuer: 'http://localhost:8080/login/oauth2/code/okta',
@@ -17,28 +21,33 @@ const config = {
 
 function App() {
 
+
   const nopad = {
     padding: 0,
     margin: 0
   };
 
   return (
+    <GlobalProvider>
       <CookiesProvider>
         <HashRouter>
-          <NavigationBar />
-          <main style={nopad}>
+          <ThemeProvider theme={theme}>
+            <NavigationBar />
+            <main style={nopad}>
               <Switch>
                 <Route path="/" component={MainPage} exact />
-                <Route path="/about" component={SomePage} />
+                <Route path="/about" component={SomePage} exact />
                 <Route path="/login" component={Login} />
                 <Route path="/account" component={AccountPage} />
                 <Route path="/signup" component={SignUp} />
+                <Route path="/users/:username" component={UserPage} />
                 <Route component={Error} />
               </Switch>
-          </main>
+            </main>
+          </ThemeProvider>
         </HashRouter>
       </CookiesProvider>
-
+    </GlobalProvider>
   )
 }
 

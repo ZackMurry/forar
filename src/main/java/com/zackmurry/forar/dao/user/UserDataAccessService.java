@@ -24,11 +24,12 @@ public class UserDataAccessService implements UserDao {
 
     @Override
     public void addUser(User user) {
-        String sql = "INSERT INTO users (username, account_role) VALUES (?, ?)";
+        String sql = "INSERT INTO users (email, username, account_role) VALUES (?, ?, ?)";
 
         try {
             jdbcTemplate.execute(
                     sql,
+                    user.getEmail(),
                     user.getUsername(),
                     user.getRole()
             );
@@ -52,5 +53,53 @@ public class UserDataAccessService implements UserDao {
             sqle.printStackTrace();
             return false;
         }
+    }
+
+    @Override
+    public boolean hasUserWithEmail(String email) {
+        String sql = "SELECT EXISTS (SELECT 1 FROM users WHERE email=?)";
+        try {
+            List<?> l = jdbcTemplate.queryForList(
+                    sql,
+                    email
+            );
+            //l.get(0) returns "{exists=[t/f]}", so getting the char at index 8 gets either t or f (for true r false)
+            //if it's equal to 't', return true, else return false
+            return l.get(0).toString().charAt(8) == 't';
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return false;
+        }
+    }
+
+    @Override
+    public User findUserByUsername(String username) {
+        //bodge moments
+        String sql = "SELECT * FROM users WHERE username=? ORDER BY points DESC LIMIT 1"; //finds the user with the most points with that name
+
+        try {
+            //this will be of length 1 bc of limit
+            List<User> users = jdbcTemplate.query(
+                    sql,
+                    new RowMapper<User>() {
+                        @Override
+                        public User mapRow(ResultSet resultSet) throws SQLException {
+                            return new User(
+                                    resultSet.getString(1), //email. unless this starts at 0...
+                                    resultSet.getString(2), //username
+                                    resultSet.getInt(3), //points
+                                    resultSet.getString(4) //role
+                            );
+                        }
+                    },
+                    username
+            );
+            return users.get(0);
+
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return new User("404", "404");
+        }
+
     }
 }

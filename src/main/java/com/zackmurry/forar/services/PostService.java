@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class PostService {
@@ -24,4 +25,13 @@ public class PostService {
     public String getRandomPost() {
         return postDao.getRandomPost();
     }
+
+    public List<Post> getRecentPosts() {
+        return postDao.getRecentPosts();
+    }
+
+    public List<Post> getPostsByEmail(String email) {
+        return postDao.getPostsByEmail(email);
+    }
+
 }

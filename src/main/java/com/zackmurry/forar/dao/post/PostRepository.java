@@ -10,5 +10,9 @@ import java.util.UUID;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Integer> {
+
     Collection<Post> findAllByUsername(String name);
+
+    Collection<Post> findAllByEmail(String email);
+
 }

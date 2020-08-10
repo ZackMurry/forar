@@ -22,7 +22,7 @@ public class ForarController {
     //todo move this to api/v1 and return a json object with details for react to load
     @GetMapping("/post/{title}")
     public ModelAndView post(@PathVariable("title") String title) {
-        postService.createPost(new Post(title, "I hope this works.", "FirstPoster"));
+        postService.createPost(new Post(title, "I hope this works.", "FirstPoster", "first@poster.org"));
         ModelAndView model = new ModelAndView("HomePage");
         return model;
     }

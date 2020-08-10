@@ -32,3 +32,8 @@ div.public-DraftEditor-content {
 .MuiTouchRipple-rippleVisible {
   color: white;
 }
+
+/* hiding scrollbar */
+::-webkit-scrollbar {
+  display: none;
+} 

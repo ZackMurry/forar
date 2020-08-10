@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -22,8 +23,14 @@ public class PostController {
 
 
     @PostMapping("/create")
-    public void createPost(@RequestBody Map<String, String> map, @AuthenticationPrincipal OidcUser principal) {
-        postService.createPost(new Post(map.get("title"), map.get("body"), principal.getFullName()));
+    public boolean createPost(@RequestBody Map<String, String> map, @AuthenticationPrincipal OidcUser principal) {
+        postService.createPost(new Post(map.get("title"), map.get("body"), principal.getGivenName() + " " + principal.getFamilyName(), principal.getEmail()));
+        return true;
+    }
+
+    @GetMapping("/new")
+    public List<Post> getRecentPosts() {
+        return postService.getRecentPosts();
     }
 
 

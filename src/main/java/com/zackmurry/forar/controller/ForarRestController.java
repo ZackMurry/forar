@@ -95,11 +95,15 @@ public class ForarRestController {
             System.out.println("null user");
             return " ";
         }
-        String username = user.getFullName();
+        String username = user.getGivenName() + " " + user.getFamilyName();
+        if(username.contains("_&_")) {
+            username = username.replace("_&_", " ");
+        }
+        System.out.println(username + " logged in.");
 
         //if we don't have the user in the database, add it
-        if(!userService.hasUserWithUsername(username)) {
-            userService.addUser(new User(username));
+        if(!userService.hasUserWithEmail(user.getEmail())) {
+            userService.addUser(new User(user.getEmail(), username));
         }
 
         return username;
@@ -150,7 +154,7 @@ public class ForarRestController {
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    @GetMapping("/posts")
+    @GetMapping("/account/posts")
     Collection<Post> posts(Principal principal) {
         System.out.println(principal.getName());
         return postRepository.findAllByUsername(principal.getName());

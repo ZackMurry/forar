@@ -12,4 +12,8 @@ public interface UserDao {
 
     boolean hasUserWithUsername(String username);
 
+    boolean hasUserWithEmail(String email);
+
+    User findUserByUsername(String username);
+
 }

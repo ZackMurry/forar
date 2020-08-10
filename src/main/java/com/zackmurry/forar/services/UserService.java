@@ -1,9 +1,12 @@
 package com.zackmurry.forar.services;
 
 import com.zackmurry.forar.dao.user.UserDao;
+import com.zackmurry.forar.models.Post;
 import com.zackmurry.forar.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class UserService {
@@ -17,6 +20,14 @@ public class UserService {
 
     public boolean hasUserWithUsername(String username) {
         return userDao.hasUserWithUsername(username);
+    }
+
+    public boolean hasUserWithEmail(String email) {
+        return userDao.hasUserWithEmail(email);
+    }
+
+    public User findUserByUsername(String username) {
+        return userDao.findUserByUsername(username.replace("_&_", " ")); //replace is for spaces in the url
     }
 
 }

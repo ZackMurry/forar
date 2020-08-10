@@ -3,13 +3,16 @@ import { withRouter } from 'react-router-dom';
 import { Button, Toolbar, ThemeProvider } from '@material-ui/core'
 import {AppBar, Typography } from '@material-ui/core'
 import { withCookies} from 'react-cookie';
-import  theme from './../theme'
+import  {theme} from './../theme'
 import { Redirect } from "react-router-dom";
+import { GlobalContext } from '../context/GlobalState';
 
 var Logo = './ForarIconWhite.png'
 
 
 class NavigationBar extends React.Component {
+
+  static contextType = GlobalContext
 
   constructor(props) {
     super();
@@ -29,11 +32,23 @@ class NavigationBar extends React.Component {
     const body = await response.text();
     console.log(body)
     console.log(response)
+    const { authenticated, setAuthenticated, username, setUsername } = this.context
+
     if (body === ' ' || body === null) {
       this.setState(({isAuthenticated: false}))
+      if(authenticated) {
+        setAuthenticated(false)
+        setUsername(null)
+      }
     } else {
       this.setState({isAuthenticated: true, user: body})
+      if(!authenticated) {
+        setAuthenticated(true)
+        setUsername(body)
+      }
     }
+    
+
   }
 
   handleChange(data) {

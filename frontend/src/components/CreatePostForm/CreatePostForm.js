@@ -1,13 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Editor, EditorState, RichUtils } from 'draft-js'
 import './../../styles.css'
-import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input, setRef, TextField } from '@material-ui/core'
-import theme from '../../theme'
+import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input, setRef, TextField, Snackbar, IconButton } from '@material-ui/core'
+import {theme} from '../../theme'
 import { green } from '@material-ui/core/colors'
 import CreateBodyFormEditor from './CreateBodyFormEditor.js'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import { withFormik } from 'formik'
 import * as Yup from 'yup'
+import { withCookies } from 'react-cookie'
+import { withRouter } from 'react-router'
+import { GlobalContext } from '../../context/GlobalState'
+import CloseIcon from '@material-ui/icons/Close';
 
 //todo figure out how to use roboto lol
 //todo pasting allows for text above char limit
@@ -15,20 +19,27 @@ import * as Yup from 'yup'
 
 const MAX_TITLE_LENGTH = 125
 
+
 class CreatePostForm extends React.Component {
 
-    constructor() {
+    static contextType = GlobalContext
+
+    constructor(props) {
         super()
         this.state = {
-            showBodyPlaceholder: false
+            showBodyPlaceholder: false,
+            openAccordion: false,
+            openSnackbar: false
         }
         this.switchShowBodyPlaceholder = this.switchShowBodyPlaceholder.bind(this)
+        
     }
-
 
     //have to do this because draft.js doesn't have functionality for transitions with placeholder text
     //before the placeholder would appear before the accordion dropped down
     _handleChange = () => {
+        const open = this.state.openAccordion
+        this.setState({openAccordion: !open})
         if(this.state.showBodyPlaceholder) {
             setTimeout(this.switchShowBodyPlaceholder, 110)
         }
@@ -61,7 +72,15 @@ class CreatePostForm extends React.Component {
 
     }
 
+    snackbarHandleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setOpen(false);
+    }
+
     render() {
+        
         
 
         const formikEnhancer = withFormik({
@@ -73,17 +92,21 @@ class CreatePostForm extends React.Component {
               title: Yup.string(),
             }),
             handleSubmit: (values, { setSubmitting }) => {
-              setTimeout(() => {
-                var tailArray = values.editorState._immutable.currentContent.blockMap._list._tail.array;
-                var innerArray = tailArray[0];
-                var contentBlock = innerArray[1]
-                var entries = contentBlock._map._root.entries
-                var textEntry = entries[1]
-                var bodyText = textEntry[1]
-                var titleText = values.title
-                this.sendToServer(titleText, bodyText)
-                setSubmitting(false);
-              }, 1000);
+                this.setState({openSnackbar: true})
+                setTimeout(() => {
+                    var tailArray = values.editorState._immutable.currentContent.blockMap._list._tail.array;
+                    var innerArray = tailArray[0];
+                    var contentBlock = innerArray[1]
+                    var entries = contentBlock._map._root.entries
+                    var textEntry = entries[1]
+                    var bodyText = textEntry[1]
+                    var titleText = values.title
+                    this.sendToServer(titleText, bodyText)
+                    setSubmitting(false);
+                }, 1000);
+                setTimeout(() => {
+                window.location.reload(false)
+                }, 4000)
             },
             displayName: 'CreatePostForm',
         });
@@ -120,9 +143,9 @@ class CreatePostForm extends React.Component {
                     }}
                 />
                 <CreateBodyFormEditor placeholder={this.state.showBodyPlaceholder ? 'Body' : ''} onChange={setFieldValue} editorState={values.editorState}/>
-                <Button variant='contained' style={{margin: 25, marginTop: 5, float: 'right'}} color='primary' type='submit' disabled={!this.state.isAuthenticated}>
+                <Button variant='contained' style={{margin: 25, marginTop: 5, float: 'right'}} color='primary' type='submit' disabled={!this.context.authenticated}>
                     <Typography style={{color: 'white'}}>
-                        {this.state.isAuthenticated ? 'Submit' : 'Sign in to post'}
+                        {this.context.authenticated ? 'Submit' : 'Sign in to post'}
                     </Typography>
                 </Button>
             </form>
@@ -134,7 +157,7 @@ class CreatePostForm extends React.Component {
 
         return (
             <ThemeProvider theme={theme}>
-                <Accordion style={{width: '40%', backgroundColor: green[500], margin: 'auto'}} elevation={5} onChange={this._handleChange}>
+                <Accordion style={{width: '40%', backgroundColor: green[500], margin: 'auto', marginTop: 50}} elevation={5} onChange={this._handleChange} expanded={this.state.openAccordion}>
                    <AccordionSummary expandIcon={<ExpandMoreIcon style={{fill: 'white'}}/>}>
                         <Typography variant='h6' style={{color: 'white'}}>
                             Create post
@@ -146,6 +169,24 @@ class CreatePostForm extends React.Component {
                         </Paper>
                     </AccordionDetails>
                 </Accordion>
+                <div>
+                    {/* todo change snackbar color to green */}
+                    <Snackbar open={this.state.openSnackbar} autoHideDuration={5000} onClose={this.snackbarHandleClose} anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                        }}
+                        style={{color: green[500]}}
+                        message="Post created. Restarting..."
+                        action={
+                            <React.Fragment>
+                              <IconButton size="small" aria-label="close" color="inherit" onClick={this.snackbarHandleClose}>
+                                <CloseIcon fontSize="small" />
+                              </IconButton>
+                            </React.Fragment>
+                          }
+                        />
+                        
+                </div>
             </ThemeProvider>
                 
 
@@ -156,4 +197,4 @@ class CreatePostForm extends React.Component {
 
 }
 
-export default CreatePostForm
+export default withCookies(withRouter(CreatePostForm))
