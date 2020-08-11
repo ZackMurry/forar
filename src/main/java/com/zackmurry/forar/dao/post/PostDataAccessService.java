@@ -73,8 +73,7 @@ public class PostDataAccessService implements PostDao {
             List<Map<String, String>> asList = jdbcTemplate.queryForList(sql);
 
             Random random = new Random();
-            String jsonPost = gson.toJson(asList.get(random.nextInt(asList.size())));
-            return jsonPost;
+            return gson.toJson(asList.get(random.nextInt(asList.size())));
         } catch (SQLException sqle) {
             sqle.printStackTrace();
             return "";
@@ -87,18 +86,15 @@ public class PostDataAccessService implements PostDao {
         try {
             return jdbcTemplate.query(
                     sql,
-                    resultSet -> {
-                        System.out.println(new Date(resultSet.getTimestamp(7).getTime()));
-                        return new Post(
-                                resultSet.getInt(1),
-                                resultSet.getString(2),
-                                resultSet.getString(3),
-                                resultSet.getInt(4),
-                                resultSet.getString(5),
-                                resultSet.getString(6),
-                                new Date(resultSet.getTimestamp(7).getTime())
-                        );
-                    }
+                    resultSet -> new Post(
+                            resultSet.getInt(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getInt(4),
+                            resultSet.getString(5),
+                            resultSet.getString(6),
+                            new Date(resultSet.getTimestamp(7).getTime())
+                    )
             );
         } catch (SQLException sqle) {
             sqle.printStackTrace();
@@ -127,6 +123,31 @@ public class PostDataAccessService implements PostDao {
             sqle.printStackTrace();
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public List<Post> getPostById(int id) {
+        String sql = "SELECT * FROM posts WHERE id=? LIMIT 1";
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    resultSet -> new Post(
+                            resultSet.getInt(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getInt(4),
+                            resultSet.getString(5),
+                            resultSet.getString(6),
+                            new Date(resultSet.getTimestamp(7).getTime())
+                    ),
+                    id
+            );
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return new ArrayList<>();
+        }
+
     }
 
 }

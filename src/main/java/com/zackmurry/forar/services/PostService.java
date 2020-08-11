@@ -34,4 +34,8 @@ public class PostService {
         return postDao.getPostsByEmail(email);
     }
 
+    public List<Post> getPostById(int id) {
+        return postDao.getPostById(id);
+    }
+
 }

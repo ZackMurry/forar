@@ -14,8 +14,10 @@ export default class PostList extends React.Component {
 
     async componentDidMount() {
         const response = await (await fetch('/api/v1/posts/new')).text()
-        console.log(response)
-        this.updateList(JSON.parse(response))
+        if(response) {
+            this.updateList(JSON.parse(response))
+        }
+        
     }
 
     updateList = (newList) => {

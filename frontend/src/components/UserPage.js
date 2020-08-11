@@ -13,16 +13,12 @@ export default function UserPage () {
     const getUser = async () => {
         const response = await fetch('/api/v1/users/name/' + username)
         const body = await response.text()
-        console.log(response)
-        console.log(body)
         setUser(JSON.parse(body))
     }
 
     const getPosts = async () => {
         const response = await fetch('/api/v1/users/name/' + username + '/posts')
         const body = await response.text()
-        console.log(response)
-        console.log(body)
         setPosts(JSON.parse(body))
     }
 

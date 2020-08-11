@@ -15,3 +15,10 @@ CREATE TABLE posts (
     time_created TIMESTAMP DEFAULT current_timestamp,
     PRIMARY KEY (id)
 );
+
+CREATE TABLE likes (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    user_email VARCHAR(320) NOT NULL,
+    post_id INT NOT NULL,
+    is_like BOOLEAN DEFAULT TRUE --true for like, false for dislike
+);

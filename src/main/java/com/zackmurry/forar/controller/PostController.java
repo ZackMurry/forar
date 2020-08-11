@@ -8,6 +8,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -31,6 +32,23 @@ public class PostController {
     @GetMapping("/new")
     public List<Post> getRecentPosts() {
         return postService.getRecentPosts();
+    }
+
+    //using a list of posts even though im just returning one. it's so that i can return an empty list
+    @GetMapping("/id/{id}")
+    public List<Post> getPostById(@PathVariable("id") String id) {
+
+        try {
+            int intId = Integer.parseInt(id);
+
+            //finding post from the id
+            return postService.getPostById(intId);
+
+        } catch (NumberFormatException e) {
+            System.out.println("A user requested an invalid post id."); //temp
+            return new ArrayList<>();
+        }
+
     }
 
 

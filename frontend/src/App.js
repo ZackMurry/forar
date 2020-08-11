@@ -12,6 +12,7 @@ import { GlobalProvider } from './context/GlobalState'
 import { ThemeProvider } from '@material-ui/core'
 import {theme} from './theme'
 import UserPage from './components/UserPage'
+import PostPage from './components/PostPage'
 
 const config = {
   issuer: 'http://localhost:8080/login/oauth2/code/okta',
@@ -41,6 +42,7 @@ function App() {
                 <Route path="/account" component={AccountPage} />
                 <Route path="/signup" component={SignUp} />
                 <Route path="/users/:username" component={UserPage} />
+                <Route path="/posts/:id" component={PostPage} />
                 <Route component={Error} />
               </Switch>
             </main>

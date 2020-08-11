@@ -146,19 +146,7 @@ public class ForarRestController {
                 .body(result);
 
     }
-
-    @GetMapping("/post/{id}")
-    ResponseEntity<?> getPost(@PathVariable int id) {
-        Optional<Post> post = postRepository.findById(id);
-        return post.map(response -> ResponseEntity.ok().body(response))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
-    }
-
-    @GetMapping("/account/posts")
-    Collection<Post> posts(Principal principal) {
-        System.out.println(principal.getName());
-        return postRepository.findAllByUsername(principal.getName());
-    }
+    //todo add logging controller for logging from frontend
 
 
 

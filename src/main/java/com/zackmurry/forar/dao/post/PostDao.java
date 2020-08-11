@@ -17,4 +17,5 @@ public interface PostDao {
 
     List<Post> getPostsByEmail(String email);
 
+    List<Post> getPostById(int id);
 }
