@@ -38,4 +38,24 @@ public class PostService {
         return postDao.getPostById(id);
     }
 
+    public void incrementVotes(int id) {
+        postDao.incrementVotes(id);
+    }
+
+    public void incrementVotes(int id, int amount) {
+        postDao.incrementVotes(id);
+    }
+
+    public void decrementVotes(int id) {
+        postDao.decrementVotes(id);
+    }
+
+    public void decrementVotes(int id, int amount) {
+        postDao.decrementVotes(id);
+    }
+
+    public String getEmailByPostId(int id) {
+        return postDao.getEmailByPostId(id);
+    }
+
 }

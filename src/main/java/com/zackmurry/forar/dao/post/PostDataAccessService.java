@@ -66,10 +66,8 @@ public class PostDataAccessService implements PostDao {
     public String getRandomPost() {
         String sql = "SELECT * FROM posts";
         try {
-
+            //change this logic to happen in the database (ORDER random())
             Gson gson = new Gson();
-            JSONObject response = new JSONObject();
-            JSONArray jsonArray = new JSONArray();
             List<Map<String, String>> asList = jdbcTemplate.queryForList(sql);
 
             Random random = new Random();
@@ -148,6 +146,82 @@ public class PostDataAccessService implements PostDao {
             return new ArrayList<>();
         }
 
+    }
+
+    @Override
+    public void incrementVotes(int id) {
+        String sql = "UPDATE posts SET votes = votes + 1 WHERE id=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    id
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void incrementVotes(int id, int amount) {
+        String sql = "UPDATE posts SET votes = votes + " + amount + " WHERE id=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    id
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void decrementVotes(int id) {
+        String sql = "UPDATE posts SET votes = votes - 1 WHERE id=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    id
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void decrementVotes(int id, int amount) {
+        String sql = "UPDATE posts SET votes = votes - " + amount + " WHERE id=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    id
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public String getEmailByPostId(int id) {
+        String sql = "SELECT user_email FROM posts WHERE id=? LIMIT 1";
+
+        try {
+            List<StringBuilder> list = jdbcTemplate.query(
+                    sql,
+                    resultSet -> new StringBuilder(
+                            resultSet.getString(1)
+                    ),
+                    id
+            );
+            //limit 1 means that there will only be one post, so we can just .get(0)
+            return list.get(0).toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "null@null.com";
+        }
     }
 
 }

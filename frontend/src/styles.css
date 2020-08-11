@@ -37,3 +37,14 @@ div.public-DraftEditor-content {
 ::-webkit-scrollbar {
   display: none;
 } 
+
+/* i dont think these actually do anything :( */
+a.user_link:visited, a.user_link:link, a.user_link {
+  text-decoration: none;
+  color: #757575;
+}
+
+a.user_link:hover, a.user_link:active {
+  text-decoration: underline;
+  color: #757575;
+}

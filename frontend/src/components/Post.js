@@ -3,7 +3,7 @@ import { Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconBut
 import {theme} from './../theme'
 import { ThemeProvider, useTheme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
-import { Link, NavLink } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown } from '@material-ui/icons';
 
@@ -74,9 +74,9 @@ export default function Post({ post }) {
         else {
             console.log('liked is not -1, 0, or 1: liked = ' + liked);
         }
+
     }
 
-    //todo add like counter and update posts' and users' votes on (dis/)likes
     //todo subheader isn't on the same line
     return (
         <div style={{display: 'flex', justifyContent: 'center', margin: 50}}>
@@ -92,9 +92,9 @@ export default function Post({ post }) {
                             <Typography variant='h5' style={{margin: 0}}>{post.title}</Typography>
                         }
                         subheader={
-                            <div style={{display: 'inline'}}>
-                                <NavLink to={"/users/" + post.username.split(' ').join('_&_')}>{post.username}</NavLink>
-                                <h5>{' —— ' + post.simpleTime}</h5>
+                            <div style={{display: 'inline-block', float: 'left'}}>
+                                <Link to={"/users/" + post.username.split(' ').join('_&_')} className='user_link' style={{color: '#757575'}}>{post.username}</Link>
+                                <b>{' —— ' + post.simpleTime}</b>
                             </div>
                         }
                     >
@@ -109,6 +109,9 @@ export default function Post({ post }) {
                         <IconButton aria-label="dislike" onClick={handleDislikeButton} disabled={!authenticated} >
                             { liked === -1 ? <ThumbDown /> : <ThumbDownOutlined />}
                         </IconButton>
+                        <Typography variant='h5' style={{color: '#757575'}}>
+                            {post.votes /* probably want to handle if the user has (dis/)liked the post but hasn't refreshed */}
+                        </Typography>
                     </CardActions>
                 </Card>
             </ThemeProvider>

@@ -81,17 +81,12 @@ public class UserDataAccessService implements UserDao {
             //this will be of length 1 bc of limit
             List<User> users = jdbcTemplate.query(
                     sql,
-                    new RowMapper<User>() {
-                        @Override
-                        public User mapRow(ResultSet resultSet) throws SQLException {
-                            return new User(
-                                    resultSet.getString(1), //email. unless this starts at 0...
-                                    resultSet.getString(2), //username
-                                    resultSet.getInt(3), //points
-                                    resultSet.getString(4) //role
-                            );
-                        }
-                    },
+                    resultSet -> new User(
+                            resultSet.getString(1), //email. unless this starts at 0...
+                            resultSet.getString(2), //username
+                            resultSet.getInt(3), //points
+                            resultSet.getString(4) //role
+                    ),
                     username
             );
             return users.get(0);
@@ -101,5 +96,61 @@ public class UserDataAccessService implements UserDao {
             return new User("404", "404");
         }
 
+    }
+
+    @Override
+    public void incrementPoints(String email) {
+        String sql = "UPDATE users SET points = points + 1 WHERE email=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    email
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void incrementPoints(String email, int amount) {
+        String sql = "UPDATE users SET points = points + " + amount + " WHERE email=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    email
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void decrementPoints(String email) {
+        String sql = "UPDATE users SET points = points - 1 WHERE email=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    email
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void decrementPoints(String email, int amount) {
+        String sql = "UPDATE users SET points = points - " + amount + " WHERE email=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    email
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { render } from '@testing-library/react';
 import Post from './Post'
 
-
+//todo add bio and stuff
 export default function UserPage () {
     
     const [ user, setUser ] = React.useState('')

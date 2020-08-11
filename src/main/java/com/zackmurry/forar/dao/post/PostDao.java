@@ -18,4 +18,15 @@ public interface PostDao {
     List<Post> getPostsByEmail(String email);
 
     List<Post> getPostById(int id);
+
+    void incrementVotes(int id);
+
+    void incrementVotes(int id, int amount);
+
+    void decrementVotes(int id);
+
+    void decrementVotes(int id, int amount);
+
+    String getEmailByPostId(int id);
+
 }

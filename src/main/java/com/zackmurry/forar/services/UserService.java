@@ -30,4 +30,20 @@ public class UserService {
         return userDao.findUserByUsername(username.replace("_&_", " ")); //replace is for spaces in the url
     }
 
+    public void incrementPoints(String email) {
+        userDao.incrementPoints(email);
+    }
+
+    public void incrementPoints(String email, int amount) {
+        userDao.incrementPoints(email, amount);
+    }
+
+    public void decrementPoints(String email) {
+        userDao.decrementPoints(email);
+    }
+
+    public void decrementPoints(String email, int amount) {
+        userDao.decrementPoints(email, amount);
+    }
+
 }

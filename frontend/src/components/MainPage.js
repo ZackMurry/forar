@@ -23,9 +23,9 @@ class MainPage extends React.Component {
 
     return (
       <div>
-        <Container fluid='true'>
-          {/*message*/}
-        </Container>
+        {/* <Container fluid='true'>
+          {message}
+        </Container> */}
         <CreatePostForm />
         <PostList />
       </div>

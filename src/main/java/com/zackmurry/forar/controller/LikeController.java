@@ -1,6 +1,8 @@
 package com.zackmurry.forar.controller;
 
 import com.zackmurry.forar.services.LikeService;
+import com.zackmurry.forar.services.PostService;
+import com.zackmurry.forar.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -12,6 +14,12 @@ public class LikeController {
 
     @Autowired
     private LikeService likeService;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private UserService userService;
 
     /**
      *
@@ -38,11 +46,16 @@ public class LikeController {
     @PostMapping("/post/{id}/like")
     public boolean likePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
-        //todo if user dislikes post, remove the dislike and add the like
-        //converting string postid to an int
+
+
         try {
-            int intPostId = Integer.parseInt(postId);
+            int intPostId = Integer.parseInt(postId); //converting string postid to an int
             likeService.likePost(email, intPostId);
+            postService.incrementVotes(intPostId);
+
+            String posterEmail = postService.getEmailByPostId(intPostId);
+            userService.incrementPoints(posterEmail);
+
             return true;
         } catch (NumberFormatException e) {
             e.printStackTrace();
@@ -60,6 +73,11 @@ public class LikeController {
             //converting postId to int
             int intPostId = Integer.parseInt(postId);
             likeService.dislikePost(email, intPostId);
+            postService.decrementVotes(intPostId);
+
+            String posterEmail = postService.getEmailByPostId(intPostId);
+            userService.decrementPoints(posterEmail);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,7 +92,17 @@ public class LikeController {
         //converting postId to int
         try {
             int intPostId = Integer.parseInt(postId);
+
+            //updating the like table
             likeService.unlikePost(email, intPostId);
+
+            //now the post table
+            postService.decrementVotes(intPostId);
+
+            //now the user table
+            String posterEmail = postService.getEmailByPostId(intPostId);
+            userService.decrementPoints(posterEmail);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -89,6 +117,11 @@ public class LikeController {
         try {
             int intPostId = Integer.parseInt(postId);
             likeService.undislikePost(email, intPostId);
+            postService.incrementVotes(intPostId);
+
+            String posterEmail = postService.getEmailByPostId(intPostId);
+            userService.incrementPoints(posterEmail);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -104,6 +137,12 @@ public class LikeController {
         try {
             int intPostId = Integer.parseInt(postId);
             likeService.changeDislikeToLike(email, intPostId);
+            postService.incrementVotes(intPostId, 2);
+
+            //setting user points
+            String posterEmail = postService.getEmailByPostId(intPostId);
+            userService.incrementPoints(posterEmail, 2);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -117,7 +156,15 @@ public class LikeController {
 
         try {
             int intPostId = Integer.parseInt(postId);
+
+            //for post
             likeService.changeLikeToDislike(email, intPostId);
+            postService.decrementVotes(intPostId, 2);
+
+            //for user
+            String posterEmail = postService.getEmailByPostId(intPostId);
+            userService.decrementPoints(posterEmail, 2);
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();

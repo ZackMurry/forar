@@ -16,4 +16,12 @@ public interface UserDao {
 
     User findUserByUsername(String username);
 
+    void incrementPoints(String email);
+
+    void incrementPoints(String email, int amount);
+
+    void decrementPoints(String email);
+
+    void decrementPoints(String email, int amount);
+
 }

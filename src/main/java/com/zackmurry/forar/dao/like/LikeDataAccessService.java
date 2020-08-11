@@ -34,9 +34,9 @@ public class LikeDataAccessService implements LikeDao {
                 return 0;
             }
 
-            //l.get(0) returns "{exists=[t/f]}", so getting the char at index 8 gets either t or f (for true r false)
-            //if it's equal to 't', return true, else return false
-            return l.get(0).toString().charAt(8) == 't' ? 1 : -1;
+            //l.get(0) returns "{is_like=[t/f]}", so getting the char at index 9 gets either t or f (for true r false)
+            //if it's equal to 't', return 1, else return -1
+            return l.get(0).toString().charAt(9) == 't' ? 1 : -1;
 
         } catch (SQLException sqle) {
             sqle.printStackTrace();
