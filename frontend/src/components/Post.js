@@ -5,7 +5,7 @@ import { ThemeProvider, useTheme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { Link } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
-import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown } from '@material-ui/icons';
+import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy } from '@material-ui/icons';
 
 export default function Post({ post }) {
 
@@ -77,6 +77,19 @@ export default function Post({ post }) {
 
     }
 
+    const handleShare = () => {
+        //copying link to clipboard
+        navigator.clipboard.writeText('localhost:8080/#/posts/' + post.id) //todo change if i ever want to host this
+    }
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(
+            post.title + ' | By: ' + post.username +
+            '\n' +
+            post.body
+        )
+    }
+
     //todo subheader isn't on the same line
     return (
         <div style={{display: 'flex', justifyContent: 'center', margin: 50}}>
@@ -103,15 +116,26 @@ export default function Post({ post }) {
                         <Typography variant='h6' style={{marginLeft: 20}}>{post.body}</Typography>
                     </CardContent>
                     <CardActions disableSpacing>
-                        <IconButton aria-label="like" onClick={handleLikeButton} disabled={!authenticated} >
-                            { liked === 1 ? <ThumbUp /> : <ThumbUpOutlined /> }
-                        </IconButton>
-                        <IconButton aria-label="dislike" onClick={handleDislikeButton} disabled={!authenticated} >
-                            { liked === -1 ? <ThumbDown /> : <ThumbDownOutlined />}
-                        </IconButton>
-                        <Typography variant='h5' style={{color: '#757575'}}>
-                            {post.votes /* probably want to handle if the user has (dis/)liked the post but hasn't refreshed */}
-                        </Typography>
+                        <div style={{float: 'left', width: '100%'}}>
+                            <IconButton aria-label="like" onClick={handleLikeButton} disabled={!authenticated} >
+                                { liked === 1 ? <ThumbUp /> : <ThumbUpOutlined /> }
+                            </IconButton>
+                            <IconButton aria-label="dislike" onClick={handleDislikeButton} disabled={!authenticated} >
+                                { liked === -1 ? <ThumbDown /> : <ThumbDownOutlined />}
+                            </IconButton>
+                            <Typography variant='h5' style={{color: '#757575', padding: 0, display: 'inline-block'}}>
+                                {post.votes /* probably want to handle if the user has (dis/)liked the post but hasn't refreshed */}
+                            </Typography>
+                        </div>
+                        
+                        <div style={{float: 'right', width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+                            <IconButton aria-label='share' onClick={handleShare}>
+                                <Share />
+                            </IconButton>
+                            <IconButton aria-label='copy' onClick={handleCopy}>
+                                <FileCopy />
+                            </IconButton>
+                        </div>
                     </CardActions>
                 </Card>
             </ThemeProvider>

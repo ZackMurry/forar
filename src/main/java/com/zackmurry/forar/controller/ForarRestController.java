@@ -92,7 +92,6 @@ public class ForarRestController {
     public String getUser(@AuthenticationPrincipal OidcUser user) {
 
         if(user == null) {
-            System.out.println("null user");
             return " ";
         }
         String username = user.getGivenName() + " " + user.getFamilyName();
