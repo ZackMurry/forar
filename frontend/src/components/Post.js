@@ -5,11 +5,11 @@ import { ThemeProvider, useTheme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { Link } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
-import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy } from '@material-ui/icons';
+import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy, Delete } from '@material-ui/icons'; //todo separate these into stuff like 'import Delete from '@material-ui/icons/Delete'
 
-export default function Post({ post }) {
+export default function Post({ post, updateList, showSnackbar }) {
 
-    const { authenticated } = React.useContext(GlobalContext)
+    const { authenticated, email } = React.useContext(GlobalContext)
     const [ liked, setLiked ] = React.useState('-2')
 
     const theme = useTheme()
@@ -90,8 +90,14 @@ export default function Post({ post }) {
         )
     }
 
-    //todo subheader isn't on the same line
+    const handleDelete = async () => {
+        const response = await fetch('/api/v1/posts/id/' + post.id, {method: 'DELETE'})
+        showSnackbar(true)
+        updateList()
+    }
+
     return (
+        post !== null &&
         <div style={{display: 'flex', justifyContent: 'center', margin: 50}}>
             <ThemeProvider theme={theme}>
                 <Card style={{width: '42.5%'}} elevation={3}>
@@ -129,6 +135,12 @@ export default function Post({ post }) {
                         </div>
                         
                         <div style={{float: 'right', width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
+                            {
+                                (authenticated && email === post.email) &&
+                                <IconButton aria-label='delete' onClick={handleDelete}>
+                                    <Delete />
+                                </IconButton>
+                            }
                             <IconButton aria-label='share' onClick={handleShare}>
                                 <Share />
                             </IconButton>
@@ -140,6 +152,7 @@ export default function Post({ post }) {
                 </Card>
             </ThemeProvider>
         </div>
+        
     )
 
 

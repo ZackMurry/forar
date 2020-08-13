@@ -19,7 +19,7 @@ import CloseIcon from '@material-ui/icons/Close';
 
 const MAX_TITLE_LENGTH = 125
 
-
+//todo don't refresh on create, just refresh post list
 class CreatePostForm extends React.Component {
 
     static contextType = GlobalContext
@@ -176,7 +176,7 @@ class CreatePostForm extends React.Component {
                         horizontal: 'left',
                         }}
                         style={{color: green[500]}}
-                        message="Post created. Restarting..."
+                        message="Post created. Refreshing..."
                         action={
                             <React.Fragment>
                               <IconButton size="small" aria-label="close" color="inherit" onClick={this.snackbarHandleClose}>

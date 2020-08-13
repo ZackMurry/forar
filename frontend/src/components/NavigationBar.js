@@ -32,19 +32,28 @@ class NavigationBar extends React.Component {
     const body = await response.text();
     console.log(body)
     console.log(response)
-    const { authenticated, setAuthenticated, username, setUsername } = this.context
+    const { authenticated, setAuthenticated, username, setUsername, email, setEmail } = this.context
 
     if (body === ' ' || body === null) {
       this.setState(({isAuthenticated: false}))
       if(authenticated) {
         setAuthenticated(false)
         setUsername(null)
+        setEmail(null)
       }
     } else {
       this.setState({isAuthenticated: true, user: body})
       if(!authenticated) {
         setAuthenticated(true)
         setUsername(body)
+        
+        const emailBody = await (await fetch('api/v1/auth/email')).text()
+        if(emailBody === ' ') {
+          setEmail(null)
+        }
+        else {
+          setEmail(emailBody)
+        }
       }
     }
     

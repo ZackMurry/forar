@@ -16,4 +16,6 @@ public interface LikeDao {
 
     void changeLikeToDislike(String email, int postId);
 
+    void deleteByPost(int id);
+
 }

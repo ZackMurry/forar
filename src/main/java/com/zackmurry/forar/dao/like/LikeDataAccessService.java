@@ -137,4 +137,19 @@ public class LikeDataAccessService implements LikeDao {
         }
     }
 
+    @Override
+    public void deleteByPost(int id) {
+        String sql = "DELETE FROM likes * WHERE post_id=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    id
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

@@ -1,5 +1,8 @@
 import React from 'react'
 import Post from './Post'
+import { Snackbar, IconButton } from '@material-ui/core'
+import { green } from '@material-ui/core/colors'
+import CloseIcon from '@material-ui/icons/Close';
 
 export default class PostList extends React.Component {
 
@@ -7,21 +10,33 @@ export default class PostList extends React.Component {
     constructor() {
         super()
         this.state = {
-            list: []
+            list: [],
+            showSnackbar: false
         }
         this.updateList = this.updateList.bind(this)
     }
 
-    async componentDidMount() {
-        const response = await (await fetch('/api/v1/posts/new')).text()
-        if(response) {
-            this.updateList(JSON.parse(response))
-        }
-        
+    componentDidMount() {
+        this.updateList()
     }
 
-    updateList = (newList) => {
-        this.setState({list: newList})
+    updateList = async () => {
+        console.log(this.state.showSnackbar)
+        const response = await (await fetch('/api/v1/posts/new')).text()
+        if(response) {
+            this.setState({list: JSON.parse(response)})
+        }
+    }
+
+    handleSnackbar = (value) => {
+        this.setState({showSnackbar: value})
+    }
+
+    snackbarHandleClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        this.setState({showSnackbar: false})
     }
 
 
@@ -29,8 +44,26 @@ export default class PostList extends React.Component {
         return (
             <>
                 {this.state.list.map(post => (
-                    <Post post={post} key={post.id}/>
+                    <Post post={post} updateList={this.updateList} showSnackbar={this.handleSnackbar} key={post.id}/>
                 ))}
+                <Snackbar 
+                    open={this.state.showSnackbar} 
+                    autoHideDuration={5000} 
+                    onClose={this.snackbarHandleClose} 
+                    anchorOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'left',
+                    }}
+                    style={{color: green[500]}}
+                    message="Post deleted."
+                    action={
+                        <React.Fragment>
+                            <IconButton size="small" aria-label="close" color="inherit" onClick={this.snackbarHandleClose}>
+                                <CloseIcon fontSize="small" />
+                            </IconButton>
+                        </React.Fragment>
+                    }
+                />
             </>
         )
     }

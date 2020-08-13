@@ -58,4 +58,7 @@ public class PostService {
         return postDao.getEmailByPostId(id);
     }
 
+    public void deletePost(int id) {
+        postDao.deletePost(id);
+    }
 }

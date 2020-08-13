@@ -4,7 +4,8 @@ import AppReducer from './AppReducer'
 //initial state
 const initialState = {
     authenticated: false,
-    username: null
+    username: null,
+    email: null
 }
 
 //Creating context
@@ -28,12 +29,21 @@ export const GlobalProvider = ({ children }) => {
         })
     }
 
+    function setEmail(value) {
+        dispatch({
+            type: 'SET_EMAIL',
+            payload: value
+        })
+    }
+
     return (
         <GlobalContext.Provider value={{
             authenticated: state.authenticated,
             username: state.username,
+            email: state.email,
             setAuthenticated,
-            setUsername
+            setUsername,
+            setEmail
         }}>
             {children}
         </GlobalContext.Provider>

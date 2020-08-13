@@ -29,4 +29,6 @@ public interface PostDao {
 
     String getEmailByPostId(int id);
 
+    void deletePost(int id);
+
 }

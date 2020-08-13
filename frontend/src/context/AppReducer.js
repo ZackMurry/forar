@@ -10,6 +10,11 @@ export default (state, action) => {
                 ...state,
                 username: action.payload
             }
+        case 'SET_EMAIL':
+            return {
+                ...state,
+                email: action.payload
+            }
         default:
             return state;
     }

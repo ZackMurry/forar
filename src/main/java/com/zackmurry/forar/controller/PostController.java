@@ -1,6 +1,7 @@
 package com.zackmurry.forar.controller;
 
 import com.zackmurry.forar.models.Post;
+import com.zackmurry.forar.services.LikeService;
 import com.zackmurry.forar.services.PostService;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class PostController {
 
     @Autowired
     private PostService postService;
+
+    @Autowired
+    private LikeService likeService;
 
 
     @PostMapping("/create")
@@ -47,6 +51,28 @@ public class PostController {
         } catch (NumberFormatException e) {
             System.out.println("A user requested an invalid post id."); //temp
             return new ArrayList<>();
+        }
+
+    }
+
+    @DeleteMapping("/id/{id}")
+    public boolean deletePostById(@PathVariable("id") String id, @AuthenticationPrincipal OidcUser principal) {
+        try {
+            int intId = Integer.parseInt(id);
+
+            //checking if the user actually made the post
+            //todo allow admins to delete posts too
+            if(!principal.getEmail().equals(postService.getEmailByPostId(intId))) {
+                return false;
+            }
+
+            postService.deletePost(intId);
+            likeService.deleteByPost(intId); //deleting the likes associated with the post
+
+            return true;
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            return false;
         }
 
     }

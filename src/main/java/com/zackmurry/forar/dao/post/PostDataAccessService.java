@@ -224,4 +224,19 @@ public class PostDataAccessService implements PostDao {
         }
     }
 
+    @Override
+    public void deletePost(int id) {
+        String sql = "DELETE FROM posts WHERE id=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    id
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

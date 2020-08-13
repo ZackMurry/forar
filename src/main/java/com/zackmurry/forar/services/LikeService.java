@@ -39,4 +39,8 @@ public class LikeService {
     public void changeLikeToDislike(String email, int postId) {
         likeDao.changeLikeToDislike(email, postId);
     }
+
+    public void deleteByPost(int id) {
+        likeDao.deleteByPost(id);
+    }
 }
