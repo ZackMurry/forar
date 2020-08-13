@@ -1,5 +1,7 @@
 package com.zackmurry.forar.controller;
 
+import com.zackmurry.forar.ForarLogger;
+import com.zackmurry.forar.models.Post;
 import com.zackmurry.forar.services.LikeService;
 import com.zackmurry.forar.services.PostService;
 import com.zackmurry.forar.services.UserService;
@@ -7,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/likes")
@@ -43,10 +47,22 @@ public class LikeController {
         }
     }
 
+    /**
+     * only used if the user hasn't liked/disliked the post yet
+     * @param principal signed in user
+     * @param postId id of the post
+     * @return true for likes, else false
+     */
     @PostMapping("/post/{id}/like")
     public boolean likePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
 
+        //checking if the user already likes the post. this is handled on the frontend
+        //but a user could probably send an http request to get around the frontend block
+        if(userLikesPost(principal, postId) != 0) {
+            ForarLogger.log("Received an invalid request for likePost. The like value is non-zero.");
+            return false;
+        }
 
         try {
             int intPostId = Integer.parseInt(postId); //converting string postid to an int
@@ -69,6 +85,11 @@ public class LikeController {
     public boolean dislikePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
 
+        if(userLikesPost(principal, postId) != 0) {
+            ForarLogger.log("Received an invalid request for dislikePost. The like value is non-zero.");
+            return false;
+        }
+
         try {
             //converting postId to int
             int intPostId = Integer.parseInt(postId);
@@ -88,6 +109,11 @@ public class LikeController {
     @DeleteMapping("/post/{id}/like")
     public boolean unlikePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
+
+        if(userLikesPost(principal, postId) != 1) {
+            ForarLogger.log("Received an invalid request for unlikePost. The like value is not 1.");
+            return false;
+        }
 
         //converting postId to int
         try {
@@ -114,6 +140,11 @@ public class LikeController {
     public boolean undislikePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
 
+        if(userLikesPost(principal, postId) != -1) {
+            ForarLogger.log("Received an invalid request for undislikePost. The like value is not -1.");
+            return false;
+        }
+
         try {
             int intPostId = Integer.parseInt(postId);
             likeService.undislikePost(email, intPostId);
@@ -133,6 +164,11 @@ public class LikeController {
     @PutMapping("/post/{id}/like")
     public boolean changeDislikeToLike(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
+
+        if(userLikesPost(principal, postId) != -1) {
+            ForarLogger.log("Received an invalid request for changeDislikeToLike. The like value is not -1.");
+            return false;
+        }
 
         try {
             int intPostId = Integer.parseInt(postId);
@@ -154,6 +190,11 @@ public class LikeController {
     public boolean changeLikeToDislike(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
         String email = principal.getEmail();
 
+        if(userLikesPost(principal, postId) != 1) {
+            ForarLogger.log("Received an invalid request for changeLikeToDislike. The like value is not 1.");
+            return false;
+        }
+
         try {
             int intPostId = Integer.parseInt(postId);
 
@@ -171,5 +212,14 @@ public class LikeController {
             return false;
         }
     }
+
+    //todo change this whenever i add ability to have private likes
+    @GetMapping("/user/{email}/likes")
+    public List<Post> getLikedPostsByUserEmail(@PathVariable("email") String email) {
+        List<Integer> idList = likeService.getPostsLikedByUser(email); //getting liked post ids
+        System.out.println(idList);
+        return postService.getPostsFromIdList(idList);
+    }
+
 
 }

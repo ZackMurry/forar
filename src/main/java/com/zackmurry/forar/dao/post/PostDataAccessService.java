@@ -239,4 +239,31 @@ public class PostDataAccessService implements PostDao {
 
     }
 
+    @Override
+    public List<Post> getPostsFromIdList(List<Integer> ids) {
+        String questionMarks = String.join(",", Collections.nCopies(ids.size(), "?"));
+
+        String sql = String.format("SELECT * FROM posts WHERE id IN (%s)", questionMarks);
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    resultSet -> new Post(
+                            resultSet.getInt(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getInt(4),
+                            resultSet.getString(5),
+                            resultSet.getString(6),
+                            new Date(resultSet.getTimestamp(7).getTime())
+                    ),
+                    ids.toArray()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+
+    }
+
 }

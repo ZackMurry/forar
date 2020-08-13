@@ -12,6 +12,7 @@ import { withCookies } from 'react-cookie'
 import { withRouter } from 'react-router'
 import { GlobalContext } from '../../context/GlobalState'
 import CloseIcon from '@material-ui/icons/Close';
+import PlainSnackbar from '../PlainSnackbar'
 
 //todo figure out how to use roboto lol
 //todo pasting allows for text above char limit
@@ -76,7 +77,7 @@ class CreatePostForm extends React.Component {
         if (reason === 'clickaway') {
             return;
         }
-        setOpen(false);
+        this.setState({openSnackbar: false})
     }
 
     render() {
@@ -101,12 +102,9 @@ class CreatePostForm extends React.Component {
                     var textEntry = entries[1]
                     var bodyText = textEntry[1]
                     var titleText = values.title
-                    this.sendToServer(titleText, bodyText)
+                    this.sendToServer(titleText, bodyText).then(window.location.reload(false))
                     setSubmitting(false);
                 }, 1000);
-                setTimeout(() => {
-                window.location.reload(false)
-                }, 4000)
             },
             displayName: 'CreatePostForm',
         });
@@ -171,20 +169,12 @@ class CreatePostForm extends React.Component {
                 </Accordion>
                 <div>
                     {/* todo change snackbar color to green */}
-                    <Snackbar open={this.state.openSnackbar} autoHideDuration={5000} onClose={this.snackbarHandleClose} anchorOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'left',
-                        }}
-                        style={{color: green[500]}}
-                        message="Post created. Refreshing..."
-                        action={
-                            <React.Fragment>
-                              <IconButton size="small" aria-label="close" color="inherit" onClick={this.snackbarHandleClose}>
-                                <CloseIcon fontSize="small" />
-                              </IconButton>
-                            </React.Fragment>
-                          }
-                        />
+                    <PlainSnackbar
+                        message='Post created. Refreshing...'
+                        duration={5000}
+                        value={this.state.openSnackbar}
+                        onClose={this.snackbarHandleClose}
+                    />
                         
                 </div>
             </ThemeProvider>

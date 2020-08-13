@@ -31,4 +31,6 @@ public interface PostDao {
 
     void deletePost(int id);
 
+    List<Post> getPostsFromIdList(List<Integer> ids);
+
 }

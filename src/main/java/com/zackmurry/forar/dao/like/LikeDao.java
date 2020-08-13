@@ -1,5 +1,7 @@
 package com.zackmurry.forar.dao.like;
 
+import java.util.List;
+
 public interface LikeDao {
 
     int userLikesPost(String email, int postId);
@@ -17,5 +19,7 @@ public interface LikeDao {
     void changeLikeToDislike(String email, int postId);
 
     void deleteByPost(int id);
+
+    List<Integer> getPostsLikedByUser(String email);
 
 }

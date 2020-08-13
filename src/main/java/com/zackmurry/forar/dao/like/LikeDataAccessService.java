@@ -7,7 +7,10 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class LikeDataAccessService implements LikeDao {
@@ -146,10 +149,28 @@ public class LikeDataAccessService implements LikeDao {
                     sql,
                     id
             );
-        } catch (Exception e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public List<Integer> getPostsLikedByUser(String email) {
+        String sql = "SELECT post_id FROM likes WHERE user_email=?";
+        System.out.println(email);
+        try {
+
+            List<String> stringList = jdbcTemplate.queryForStringList(
+                    sql,
+                    email
+            );
+            System.out.println(stringList);
+            return stringList.stream().map(Integer::parseInt).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
 }

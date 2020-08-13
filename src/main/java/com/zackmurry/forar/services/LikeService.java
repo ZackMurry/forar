@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LikeService {
 
@@ -43,4 +45,14 @@ public class LikeService {
     public void deleteByPost(int id) {
         likeDao.deleteByPost(id);
     }
+
+    /**
+     *
+     * @param email email of user
+     * @return list of post ids
+     */
+    public List<Integer> getPostsLikedByUser(String email) {
+        return likeDao.getPostsLikedByUser(email);
+    }
+
 }

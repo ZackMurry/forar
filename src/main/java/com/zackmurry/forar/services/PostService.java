@@ -61,4 +61,8 @@ public class PostService {
     public void deletePost(int id) {
         postDao.deletePost(id);
     }
+
+    public List<Post> getPostsFromIdList(List<Integer> ids) {
+        return postDao.getPostsFromIdList(ids);
+    }
 }

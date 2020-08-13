@@ -1,20 +1,26 @@
 import React, { useEffect } from 'react'
-import { Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton } from '@material-ui/core'
+import { Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton, Tooltip, withStyles } from '@material-ui/core'
 import {theme} from './../theme'
 import { ThemeProvider, useTheme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { Link } from 'react-router-dom'
 import { GlobalContext } from '../context/GlobalState'
 import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy, Delete } from '@material-ui/icons'; //todo separate these into stuff like 'import Delete from '@material-ui/icons/Delete'
+import GreenTooltip from './GreenTooltip'
+import UserAvatar from './UserAvatar'
+import PlainSnackbar from './PlainSnackbar'
 
+//todo post editing?
+//todo make posts wider on mobile/smaller screens.
 export default function Post({ post, updateList, showSnackbar }) {
 
     const { authenticated, email } = React.useContext(GlobalContext)
     const [ liked, setLiked ] = React.useState('-2')
+    const [ likeError, setLikeError ] = React.useState(false)
+    const [ deleteError, setDeleteError ] = React.useState(false)
 
     const theme = useTheme()
     
-    //todo check if user likes this
     const getLiked = async () => {
         if(!authenticated) return 0;
         const response = await fetch('/api/v1/likes/post/' + post.id)
@@ -34,12 +40,33 @@ export default function Post({ post, updateList, showSnackbar }) {
             //set liked to default
             setLiked(0)
             const response = await fetch('/api/v1/likes/post/' + post.id + '/like', {method: 'DELETE'}) //todo not gonna use response unless i really want to get into debugging
+            
+            //error handling
+            const text = await response.text()
+            try {
+                JSON.parse('p' + text)
+            } catch (e){
+                console.log(e)
+                setLiked(1)
+                setLikeError(true)
+            }
         }
         else if(liked === 0) {
             //tell this component that it's liked
             setLiked(1) 
+            
             //then tell the server that it's liked
             const response = await fetch('/api/v1/likes/post/' + post.id + '/like', {method: 'POST'})
+
+            //error handling
+            const text = await response.text()
+            try {
+                JSON.parse(text)
+            } catch (e){
+                console.log(e)
+                setLiked(0)
+                setLikeError(true)
+            }
         }
         else if(liked === -1) {
 
@@ -48,6 +75,16 @@ export default function Post({ post, updateList, showSnackbar }) {
 
             //for telling the server about this
             const response = await fetch('/api/v1/likes/post/' + post.id + '/like', {method: 'PUT'})
+            
+            //error handling
+            const text = await response.text()
+            try {
+                JSON.parse(text)
+            } catch (e){
+                console.log(e)
+                setLiked(-1)
+                setLikeError(true)
+            }
         }
         else {
             console.log('liked is not -1, 0, or 1: liked = ' + liked);
@@ -60,16 +97,48 @@ export default function Post({ post, updateList, showSnackbar }) {
 
             //telling the server
             const response = await fetch('/api/v1/likes/post/' + post.id + '/dislike', {method: 'PUT'})
+            
+            //error handling
+            const text = await response.text()
+            try {
+                JSON.parse(text)
+            } catch (e){
+                console.log(e)
+                setLiked(1)
+                setLikeError(true)
+            }
         }
         else if(liked === 0) {
+            //could only set liked to -1 on the else of error handling, but it wouldn't update as fast so idk
             setLiked(-1)
+
             //now telling the server
             const response = await fetch('/api/v1/likes/post/' + post.id + '/dislike', {method: 'POST'})
+            
+            //error handling
+            const text = await response.text()
+            try {
+                JSON.parse(text)
+            } catch (e){
+                console.log(e)
+                setLiked(0)
+                setLikeError(true)
+            }
         }
         else if(liked === -1) {
             setLiked(0) //removing the dislike, so setting it to default
             //telling the backend
             const response = await fetch('/api/v1/likes/post' + post.id + '/dislike', {method: 'DELETE'})
+            
+            //error handling
+            const text = await response.text()
+            try {
+                JSON.parse(text)
+            } catch (e){
+                console.log(e)
+                setLiked(0)
+                setLikeError(true)
+            }
         }
         else {
             console.log('liked is not -1, 0, or 1: liked = ' + liked);
@@ -92,9 +161,36 @@ export default function Post({ post, updateList, showSnackbar }) {
 
     const handleDelete = async () => {
         const response = await fetch('/api/v1/posts/id/' + post.id, {method: 'DELETE'})
-        showSnackbar(true)
-        updateList()
+
+        //error handling
+        const text = await response.text()
+        try {
+            JSON.parse(text)
+            showSnackbar(true) //if successful, show that it has been deleted
+            updateList() //updating the post list
+        } catch (e){
+            console.log(e)
+            setDeleteError(true)
+        }
+
+        
+        
     }
+
+    const onLikeSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setLikeError(false);
+    }
+
+    const onDeleteSnackbarClose = (event, reason) => {
+        if (reason === 'clickaway') {
+            return;
+        }
+        setDeleteError(false);
+    }
+    
 
     return (
         post !== null &&
@@ -103,9 +199,7 @@ export default function Post({ post, updateList, showSnackbar }) {
                 <Card style={{width: '42.5%'}} elevation={3}>
                     <CardHeader
                         avatar={
-                            <Avatar style={{backgroundColor: green[500]}}>
-                                {post.username.substring(0,1)}
-                            </Avatar>
+                            <UserAvatar username={post.username}/>
                         }
                         title={
                             <Typography variant='h5' style={{margin: 0}}>{post.title}</Typography>
@@ -137,20 +231,38 @@ export default function Post({ post, updateList, showSnackbar }) {
                         <div style={{float: 'right', width: '100%', display: 'flex', justifyContent: 'flex-end'}}>
                             {
                                 (authenticated && email === post.email) &&
-                                <IconButton aria-label='delete' onClick={handleDelete}>
-                                    <Delete />
-                                </IconButton>
+                                <GreenTooltip title='Delete'>
+                                    <IconButton aria-label='delete' onClick={handleDelete} style={{color: green[500]}}>
+                                        <Delete />
+                                    </IconButton>
+                                </GreenTooltip>
                             }
-                            <IconButton aria-label='share' onClick={handleShare}>
-                                <Share />
-                            </IconButton>
-                            <IconButton aria-label='copy' onClick={handleCopy}>
-                                <FileCopy />
-                            </IconButton>
+                            <GreenTooltip title='Share'>
+                                <IconButton aria-label='share' onClick={handleShare} style={{color: green[500]} /* don't know how i feel about this */}>
+                                    <Share />
+                                </IconButton>
+                            </GreenTooltip>
+                            <GreenTooltip title='Copy'>
+                                <IconButton aria-label='copy' onClick={handleCopy} style={{color: green[500]}}>
+                                    <FileCopy />
+                                </IconButton>
+                            </GreenTooltip>
                         </div>
                     </CardActions>
                 </Card>
             </ThemeProvider>
+            <PlainSnackbar
+                message='Error occurred while rating post. Please refresh.'
+                duration={5000}
+                value={likeError}
+                onClose={onLikeSnackbarClose}
+            />
+            <PlainSnackbar
+                message='Error occurred while deleting post. Please refresh.'
+                duration={5000}
+                value={deleteError}
+                onClose={onDeleteSnackbarClose}
+            />
         </div>
         
     )

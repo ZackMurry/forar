@@ -17,18 +17,19 @@ import java.util.Map;
 @RequestMapping("/api/v1/posts")
 public class PostController {
 
-    //todo maybe make method for converting an OIDC User object to the name that will be used
-
-
     @Autowired
     private PostService postService;
 
     @Autowired
     private LikeService likeService;
 
+    private static final int MAX_TITLE_LENGTH = 400;
+    private static final int MAX_BODY_LENGTH = 5000;
+
 
     @PostMapping("/create")
     public boolean createPost(@RequestBody Map<String, String> map, @AuthenticationPrincipal OidcUser principal) {
+        if(map.get("title").length() > MAX_TITLE_LENGTH || map.get("body").length() > MAX_BODY_LENGTH) return false;
         postService.createPost(new Post(map.get("title"), map.get("body"), principal.getGivenName() + " " + principal.getFamilyName(), principal.getEmail()));
         return true;
     }
