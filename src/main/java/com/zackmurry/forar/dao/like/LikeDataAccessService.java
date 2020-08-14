@@ -157,15 +157,28 @@ public class LikeDataAccessService implements LikeDao {
 
     @Override
     public List<Integer> getPostsLikedByUser(String email) {
-        String sql = "SELECT post_id FROM likes WHERE user_email=?";
-        System.out.println(email);
+        String sql = "SELECT post_id FROM likes WHERE user_email=? AND is_like='t'";
         try {
-
             List<String> stringList = jdbcTemplate.queryForStringList(
                     sql,
                     email
             );
-            System.out.println(stringList);
+            return stringList.stream().map(Integer::parseInt).collect(Collectors.toList());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    @Override
+    public List<Integer> getPostsDislikedByUser(String email) {
+        String sql = "SELECT post_id FROM likes WHERE user_email=? AND is_like='f'";
+
+        try {
+            List<String> stringList = jdbcTemplate.queryForStringList(
+                    sql,
+                    email
+            );
             return stringList.stream().map(Integer::parseInt).collect(Collectors.toList());
         } catch (Exception e) {
             e.printStackTrace();

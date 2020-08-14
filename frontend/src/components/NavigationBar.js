@@ -7,7 +7,7 @@ import  {theme} from './../theme'
 import { Redirect } from "react-router-dom";
 import { GlobalContext } from '../context/GlobalState';
 
-var Logo = './ForarIconWhite.png'
+var Logo = './ForarIconWhite.png' //todo change this to a non-copywrited image if i wanna host
 
 
 class NavigationBar extends React.Component {
@@ -17,13 +17,16 @@ class NavigationBar extends React.Component {
   constructor(props) {
     super();
     this.state = {
-      redirect: null,
-      isAuthenticated: false
+      loginRedirect: null,
+      isAuthenticated: false,
+      homePageRedirect: false
     }
     const {cookies} = props;
-    this.state.csrfToken = cookies.get('XSRF-TOKEN');
-    this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
+    this.state.csrfToken = cookies.get('XSRF-TOKEN')
+    this.login = this.login.bind(this)
+    this.logout = this.logout.bind(this)
+    this.handleLogoClick = this.handleLogoClick.bind(this)
+    this.handleHomePageRedirect = this.handleHomePageRedirect.bind(this)
   }
 
 
@@ -32,7 +35,7 @@ class NavigationBar extends React.Component {
     const body = await response.text();
     console.log(body)
     console.log(response)
-    const { authenticated, setAuthenticated, username, setUsername, email, setEmail } = this.context
+    const { authenticated, setAuthenticated, setUsername, email, setEmail } = this.context
 
     if (body === ' ' || body === null) {
       this.setState(({isAuthenticated: false}))
@@ -60,9 +63,6 @@ class NavigationBar extends React.Component {
 
   }
 
-  handleChange(data) {
-    console.log(data)
-  }
 
   login() {
     let port = (window.location.port ? ':' + window.location.port : '');
@@ -82,6 +82,14 @@ class NavigationBar extends React.Component {
       });
   }
 
+  handleLogoClick() {
+    this.setState({homePageRedirect: true})
+  }
+
+  handleHomePageRedirect() {
+    this.setState({homePageRedirect: false})
+  }
+
   render() {
     const style = {
       flexGrow: 1,
@@ -95,8 +103,13 @@ class NavigationBar extends React.Component {
     }
 
     
-    if(this.state.redirect) {
-      return <Redirect to={this.state.redirect} />
+    if(this.state.loginRedirect) {
+      //todo might need to setState this to false here
+      return <Redirect to={this.state.loginRedirect} />
+    }
+    if(this.state.homePageRedirect) {
+      this.handleHomePageRedirect()
+      return <Redirect push to='/' />
     }
 
     return (
@@ -104,7 +117,10 @@ class NavigationBar extends React.Component {
         <div>
           <AppBar position="static" style={{minHeight: '7vh'}}>
             <Toolbar>
-              <img src={Logo} style={{paddingRight:10}} alt="icon-white"/>
+              {/* todo align button in the middle (vertically) */}
+              <button style={{backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', position: 'relative', top: '50%', transform: 'translateY(+6.25%)'}}>
+                <img src={Logo} style={{paddingRight: 10}} alt="icon-white" onClick={this.handleLogoClick}/>
+              </button>
               <Typography variant="h4" style={style}>
                 Forar
               </Typography>

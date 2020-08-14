@@ -55,4 +55,7 @@ public class LikeService {
         return likeDao.getPostsLikedByUser(email);
     }
 
+    public List<Integer> getPostsDislikedByUser(String email) {
+        return likeDao.getPostsDislikedByUser(email);
+    }
 }

@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
-import { Card, CardHeader, CardContent, CardActions, Avatar, Typography, IconButton, Tooltip, withStyles } from '@material-ui/core'
-import {theme} from './../theme'
+import { Card, CardHeader, CardContent, CardActions, Typography, IconButton } from '@material-ui/core'
 import { ThemeProvider, useTheme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { Link } from 'react-router-dom'

@@ -241,6 +241,7 @@ public class PostDataAccessService implements PostDao {
 
     @Override
     public List<Post> getPostsFromIdList(List<Integer> ids) {
+        if(ids.size() == 0) return new ArrayList<>(); //at size() == 0, the SQL wouldn't be valid and there'd be no elements anyways
         String questionMarks = String.join(",", Collections.nCopies(ids.size(), "?"));
 
         String sql = String.format("SELECT * FROM posts WHERE id IN (%s)", questionMarks);

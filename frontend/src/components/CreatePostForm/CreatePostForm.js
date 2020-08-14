@@ -1,7 +1,7 @@
-import React, { useContext } from 'react'
-import { Editor, EditorState, RichUtils } from 'draft-js'
+import React from 'react'
+import { EditorState } from 'draft-js'
 import './../../styles.css'
-import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Slide, Collapse, Button, FormControl, Input, setRef, TextField, Snackbar, IconButton } from '@material-ui/core'
+import { Accordion, AccordionDetails, AccordionSummary, ThemeProvider, Typography, Paper, Button, TextField } from '@material-ui/core'
 import {theme} from '../../theme'
 import { green } from '@material-ui/core/colors'
 import CreateBodyFormEditor from './CreateBodyFormEditor.js'
@@ -11,7 +11,6 @@ import * as Yup from 'yup'
 import { withCookies } from 'react-cookie'
 import { withRouter } from 'react-router'
 import { GlobalContext } from '../../context/GlobalState'
-import CloseIcon from '@material-ui/icons/Close';
 import PlainSnackbar from '../PlainSnackbar'
 
 //todo figure out how to use roboto lol

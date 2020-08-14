@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useParams } from "react-router-dom";
 import Post from './Post'
-import { Typography, AppBar, Tabs, Tab, Fade } from '@material-ui/core';
+import { Typography, AppBar, Tabs, Tab, Fade, Grow } from '@material-ui/core';
 import UserAvatar from './UserAvatar';
 import Grid from '@material-ui/core/Grid'
 import { green } from '@material-ui/core/colors';
@@ -40,65 +40,62 @@ function UserPage () {
     const [ user, setUser ] = React.useState('')
     const [ posts, setPosts ] = React.useState([])
     const [ likedPosts, setLikedPosts ] = React.useState([])
-    const [ tabValue, setTabValue ] = React.useState(0)
+    const [ dislikedPosts, setDislikedPosts ] = React.useState([])
+    const [ tabValue, setTabValue ] = React.useState(1)
     const { username } = useParams();
 
-    const getUser = async () => {
-        const userResponse = await fetch('/api/v1/users/name/' + username) //todo probly change handling to email
-        const userBody = await userResponse.text()
-        if(userBody) {
-            setUser(JSON.parse(userBody))
-        } else console.log('set user failed')
-        
-
-        const likedResponse = await fetch('/api/v1/likes/user/' + JSON.parse(userBody).email + '/likes') //have to use JSON.parse because setUser hasn't been updated yet
-        const likedBody = await likedResponse.text()
-        if(likedBody) {
-            setLikedPosts(JSON.parse(likedBody))
-        } else console.log('set liked posts failed')
-    }
-
-    const getPosts = async () => {
-        const postsResponse = await fetch('/api/v1/users/name/' + username + '/posts')
-        const postsBody = await postsResponse.text()
-        console.log(postsBody)
-        if(postsBody) {
-            setPosts(JSON.parse(postsBody))  
-        } else console.log('set posts failed')
-              
-    }
-
     useEffect(() => {
-        if (!user) {
-            getUser()
-            getPosts()
+        async function getData() {
+            if (!user) {
+                //todo probly make snackbars for if these fail using try catches
+
+                const userResponse = await fetch('/api/v1/users/name/' + username) //todo probly change handling to email
+                const userBody = await userResponse.text()
+                const userParsed = JSON.parse(userBody)
+                if(userBody) {
+                    setUser(userParsed)
+                } else console.log('set user failed')
+                
+                const dislikedResponse = await fetch('/api/v1/likes/user/' + userParsed.email + '/dislikes')
+                const dislikedBody = await dislikedResponse.text()
+                if(dislikedBody) {
+                    setDislikedPosts(JSON.parse(dislikedBody))
+                } else console.log('set disliked posts failed')
+
+                const likedResponse = await fetch('/api/v1/likes/user/' + userParsed.email + '/likes') //have to use JSON.parse because setUser hasn't been updated yet
+                const likedBody = await likedResponse.text()
+                if(likedBody) {
+                    setLikedPosts(JSON.parse(likedBody))
+                } else console.log('set liked posts failed')
+
+                const postsResponse = await fetch('/api/v1/users/name/' + username + '/posts')
+                const postsBody = await postsResponse.text()
+                if(postsBody) {
+                    setPosts(JSON.parse(postsBody))  
+                } else console.log('set posts failed')
+
+                
+            }
         }
-      }, [user, getUser, setUser, posts, getPosts, setPosts, likedPosts, setLikedPosts]
+        getData()
+      }, [user, setUser, posts, setPosts, likedPosts, setLikedPosts, dislikedPosts, setDislikedPosts, username]
     );
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue)
-        console.log(newValue)
     }
 
     const StyledTab = withStyles((theme) => ({
         root: {
           textTransform: 'none',
           minWidth: 72,
+          width: '15vw',
           color: '#fff',
           fontWeight: theme.typography.fontWeightRegular,
           marginRight: theme.spacing(4),
+          fontSize: 20,
           fontFamily: [
-            '-apple-system',
-            'BlinkMacSystemFont',
-            '"Segoe UI"',
-            'Roboto',
-            '"Helvetica Neue"',
-            'Arial',
-            'sans-serif',
-            '"Apple Color Emoji"',
-            '"Segoe UI Emoji"',
-            '"Segoe UI Symbol"',
+            'Roboto'
           ].join(','),
           '&$selected': {
             backgroundColor: green[600]
@@ -107,6 +104,7 @@ function UserPage () {
         selected: {},
       }))((props) => <Tab disableRipple {...props} />);
     
+      
 
     return (
         <>
@@ -139,39 +137,78 @@ function UserPage () {
                     style={{backgroundColor: green[500]}}
                     centered
                 >
-                    <StyledTab label='Posts'/>
+                    {/* todo maybe move posts to the middle tab? */}
                     <StyledTab label='Liked posts' />
+                    <StyledTab label='Posts' />
+                    <StyledTab label='Disliked posts' />
                 </Tabs>
             </AppBar>
 
-            {/* for the posts tab */}
-            <TabPanel value={tabValue} index={0}>
-                {/* maybe use a fade for each post idk */}
-                <Fade in={true} timeout={1000}>
+            {/* for the liked tab 
+                todo allow ability to keep likes private
+                todo make another tab for dislikes
+                */}
+            <TabPanel value={tabValue} index={0}>        
+                { 
+                    likedPosts.length !== 0 
+                    ?
+                    <Grow in={true} timeout={1000}>
+                        <div>
+                            {likedPosts.map(post => (
+                                <Post post={post} key={post.id} /> 
+                            ))}
+                        </div>
+                    </Grow>
+                    :
+                    <Fade in={true} timeout={500}>
+                        <div style={{textAlign: 'center', margin: '10%'}}>
+                            <Typography variant='h4' style={{color: '#757575'}}>
+                                This user hasn't liked any posts yet.
+                            </Typography>
+                        </div>
+                    </Fade>
+                }
+            </TabPanel>
+
+            {/* for the posts tab
+                todo searching posts?
+                */}
+            <TabPanel value={tabValue} index={1}>
+                <Grow in={true} timeout={1000}>
                     <div>
                         {posts.map(post => (
                             <Post post={post} key={post.id}/>
                         ))}
                     </div>
-                </Fade>
+                </Grow>
             </TabPanel>
             
-            {/* for the liked tab 
-                todo allow ability to keep likes private
-                todo make another tab for dislikes
-                */}
-            <TabPanel value={tabValue} index={1}>
-                <Fade in={true} timeout={1000}>
-                    { likedPosts != null &&
-                        <div>
-                            {likedPosts.map(post => (
-                            <Post post={post} key={post.id} /> 
-                            ))}
-                        </div>
-                    }
-                </Fade>
-            </TabPanel>
+            {/* for the dislikes tab */}
+            <TabPanel value={tabValue} index={2}>
+                
+                <div>
+                    { 
+                        dislikedPosts.length !== 0 
+                        ?
+                        <Grow in={true} timeout={1000}>
+                            <div>
+                                {dislikedPosts.map(post=> (
+                                    <Post post={post} key={post.id} />
+                                ))}
+                            </div>
+                        </Grow>
+                        :
+                        <Fade in={true} timeout={500}>
+                            <div style={{textAlign: 'center', margin: '10%'}}>
+                                <Typography variant='h4' style={{color: '#757575'}}>
+                                    This user hasn't disliked any posts yet.
+                                </Typography>
+                            </div>
+                        </Fade>
 
+                    }
+                </div>
+            </TabPanel>
 
             
         </>

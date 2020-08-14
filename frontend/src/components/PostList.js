@@ -23,9 +23,12 @@ export default class PostList extends React.Component {
     updateList = async () => {
         console.log(this.state.showSnackbar)
         const response = await (await fetch('/api/v1/posts/new')).text()
-        if(response) {
+        try {
             this.setState({list: JSON.parse(response)})
+        } catch (e) {
+            console.log('Unable to contact server for posts.')
         }
+        
     }
 
     handleSnackbar = (value) => {

@@ -22,4 +22,6 @@ public interface LikeDao {
 
     List<Integer> getPostsLikedByUser(String email);
 
+    List<Integer> getPostsDislikedByUser(String email);
+
 }

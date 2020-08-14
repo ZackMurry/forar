@@ -214,10 +214,16 @@ public class LikeController {
     }
 
     //todo change this whenever i add ability to have private likes
+    //todo have a method for getting both likes and dislikes?
     @GetMapping("/user/{email}/likes")
     public List<Post> getLikedPostsByUserEmail(@PathVariable("email") String email) {
-        List<Integer> idList = likeService.getPostsLikedByUser(email); //getting liked post ids
-        System.out.println(idList);
+        List<Integer> idList = likeService.getPostsLikedByUser(email); //getting liked post ids;
+        return postService.getPostsFromIdList(idList);
+    }
+
+    @GetMapping("/user/{email}/dislikes")
+    public List<Post> getDislikedPostsByUserEmail(@PathVariable("email") String email) {
+        List<Integer> idList = likeService.getPostsDislikedByUser(email);
         return postService.getPostsFromIdList(idList);
     }
 
