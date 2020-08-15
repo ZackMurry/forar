@@ -98,7 +98,6 @@ public class ForarRestController {
         if(username.contains("_&_")) {
             username = username.replace("_&_", " ");
         }
-        System.out.println(username + " logged in.");
 
         //if we don't have the user in the database, add it
         if(!userService.hasUserWithEmail(user.getEmail())) {

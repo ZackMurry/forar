@@ -11,6 +11,7 @@ import PlainSnackbar from './PlainSnackbar'
 
 //todo post editing?
 //todo make posts wider on mobile/smaller screens.
+//todo follow user from the post
 export default function Post({ post, updateList, showSnackbar }) {
 
     const { authenticated, email } = React.useContext(GlobalContext)

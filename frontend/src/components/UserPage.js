@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { useParams } from "react-router-dom";
 import Post from './Post'
-import { Typography, AppBar, Tabs, Tab, Fade, Grow } from '@material-ui/core';
+import { Typography, AppBar, Tabs, Tab, Fade, Grow, Paper } from '@material-ui/core';
 import UserAvatar from './UserAvatar';
 import Grid from '@material-ui/core/Grid'
 import { green } from '@material-ui/core/colors';
 import { withStyles } from '@material-ui/styles';
+import UserDescription from './UserDescription';
 
 const styles = theme => ({
     root: {
@@ -34,6 +35,7 @@ function TabPanel(props) {
 
 //todo add bio and stuff
 //todo add another page for the current user's page (at /me or something)
+//todo add functionality for users to put links to their instagrams and stuff
 function UserPage () {
     
     
@@ -110,90 +112,68 @@ function UserPage () {
         <>
             <div style={{marginTop: 50}}></div>
             
-            <Grid container direction="row" alignItems="center" style={{paddingLeft: 50}}>
+            {/* using vh for horizontal components because i want to make the avatar a circle */}
+            <Grid container direction="row" alignItems="center" style={{paddingLeft: '5vh'}}>
                     <UserAvatar username={username} height='20vh' width='20vh' fontSize={96}/>
                     <Typography 
                         variant='h1' 
-                        style={{textDecoration: 'underline', textDecorationColor: green[500], paddingLeft: 25} /* underline the same as avatar color? */}
+                        component='pre'
+                        style={{textDecoration: 'underline', textDecorationColor: green[700], paddingLeft: '3vh'} /* underline the same as avatar color? */}
                     >
-                        {user.username}
+                        {user.username + ' '}
                     </Typography> 
 
             </Grid>
 
-            <AppBar position='static' style={{marginTop: 50}}>
-                <Tabs
-                    value={tabValue}
-                    indicatorColor='secondary'
-                    TabIndicatorProps={{
-                        style: {
-                            height: '10vh',
-                            color: '#fff'
-                        }
-                    }}
-                    textColor='secondary'
-                    onChange={handleTabChange}
-                    aria-label='profile tabs'
-                    style={{backgroundColor: green[500]}}
-                    centered
-                >
-                    {/* todo maybe move posts to the middle tab? */}
-                    <StyledTab label='Liked posts' />
-                    <StyledTab label='Posts' />
-                    <StyledTab label='Disliked posts' />
-                </Tabs>
-            </AppBar>
-
-            {/* for the liked tab 
-                todo allow ability to keep likes private
-                todo make another tab for dislikes
-                */}
-            <TabPanel value={tabValue} index={0}>        
-                { 
-                    likedPosts.length !== 0 
-                    ?
-                    <Grow in={true} timeout={1000}>
-                        <div>
-                            {likedPosts.map(post => (
-                                <Post post={post} key={post.id} /> 
-                            ))}
-                        </div>
-                    </Grow>
-                    :
-                    <Fade in={true} timeout={500}>
-                        <div style={{textAlign: 'center', margin: '10%'}}>
-                            <Typography variant='h4' style={{color: '#757575'}}>
-                                This user hasn't liked any posts yet.
-                            </Typography>
-                        </div>
-                    </Fade>
-                }
-            </TabPanel>
-
-            {/* for the posts tab
-                todo searching posts?
-                */}
-            <TabPanel value={tabValue} index={1}>
-                <Grow in={true} timeout={1000}>
-                    <div>
-                        {posts.map(post => (
-                            <Post post={post} key={post.id}/>
-                        ))}
-                    </div>
-                </Grow>
-            </TabPanel>
+            { user !== '' && <UserDescription user={user}/> }
             
-            {/* for the dislikes tab */}
-            <TabPanel value={tabValue} index={2}>
+
+            <Paper elevation={5} style={{marginTop: 50, paddingBottom: 500}}>
                 
-                <div>
+                
+                <Paper elevation={5}>
+
+                    <div style={{backgroundColor: green[500], width: '100%', height: 200, alignContent: 'center', alignItems: 'center'}}>
+                        <Typography variant='h5' style={{marginTop: 100, color: '#fff', textAlign: 'center', paddingTop: 50}}>Lorem ipsum</Typography>
+                    </div>
+
+                    <AppBar position='static' elevation={0}>
+                        <Tabs
+                            value={tabValue}
+                            indicatorColor='secondary'
+                            TabIndicatorProps={{
+                                style: {
+                                    height: '10vh',
+                                    color: '#fff'
+                                }
+                            }}
+                            textColor='secondary'
+                            onChange={handleTabChange}
+                            aria-label='profile tabs'
+                            style={{backgroundColor: green[500]}}
+                            centered
+                        >
+                            {/* todo maybe move posts to the middle tab? */}
+                            <StyledTab label='Liked posts' />
+                            <StyledTab label='Posts' />
+                            <StyledTab label='Disliked posts' />
+                        </Tabs>
+                    </AppBar>
+                </Paper>
+                
+
+                {/* for the liked tab 
+                    todo allow ability to keep likes private
+                    todo make another tab for dislikes
+                    */}
+                <TabPanel value={tabValue} index={0}>        
                     { 
-                        dislikedPosts.length !== 0 
+                        likedPosts.length !== 0 
                         ?
                         <Grow in={true} timeout={1000}>
                             <div>
-                                {dislikedPosts.map(post=> (
-                                    <Post post={post} key={post.id} />
+                                {likedPosts.map(post => (
+                                    <Post post={post} key={post.id} /> 
                                 ))}
                             </div>
                         </Grow>
@@ -201,14 +181,69 @@ function UserPage () {
                         <Fade in={true} timeout={500}>
                             <div style={{textAlign: 'center', margin: '10%'}}>
                                 <Typography variant='h4' style={{color: '#757575'}}>
-                                    This user hasn't disliked any posts yet.
+                                    This user hasn't liked any posts yet.
                                 </Typography>
                             </div>
                         </Fade>
-
                     }
-                </div>
-            </TabPanel>
+                </TabPanel>
+
+                {/* for the posts tab
+                    todo searching posts?
+                    */}
+                <TabPanel value={tabValue} index={1}>
+                    <div>
+                        {
+                            posts.length !== 0
+                            ?
+                                <Grow in={true} timeout={1000}>
+                                    <div>
+                                        {posts.map(post => (
+                                            <Post post={post} key={post.id}/>
+                                        ))}
+                                    </div>
+                                </Grow>
+                            :
+                                <Fade in={true} timeout={500}>
+                                    <div style={{textAlign: 'center', margin: '10%'}}>
+                                        <Typography variant='h4' style={{color: '#757575'}}>
+                                            This user hasn't made any posts yet.
+                                        </Typography>
+                                    </div>
+                                </Fade>
+                        }  
+                    </div>
+                    
+                </TabPanel>
+                
+                {/* for the dislikes tab */}
+                <TabPanel value={tabValue} index={2}>
+                    
+                    <div>
+                        { 
+                            dislikedPosts.length !== 0 
+                            ?
+                            <Grow in={true} timeout={1000}>
+                                <div>
+                                    {dislikedPosts.map(post=> (
+                                        <Post post={post} key={post.id} />
+                                    ))}
+                                </div>
+                            </Grow>
+                            :
+                            <Fade in={true} timeout={500}>
+                                <div style={{textAlign: 'center', margin: '10%'}}>
+                                    <Typography variant='h4' style={{color: '#757575'}}>
+                                        This user hasn't disliked any posts yet.
+                                    </Typography>
+                                </div>
+                            </Fade>
+
+                        }
+                    </div>
+                </TabPanel>
+            </Paper>
+            
 
             
         </>

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+//todo bios and profile colors/pics
+
 @RestController
 @RequestMapping("/api/v1/users")
 public class UserController {

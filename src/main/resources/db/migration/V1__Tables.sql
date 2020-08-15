@@ -22,3 +22,9 @@ CREATE TABLE likes (
     post_id INT NOT NULL,
     is_like BOOLEAN DEFAULT TRUE --true for like, false for dislike
 );
+
+CREATE TABLE follows (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    follower_email VARCHAR(320) NOT NULL,
+    following_email VARCHAR(320) NOT NULL
+);
