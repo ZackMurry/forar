@@ -91,17 +91,24 @@ export default function FollowButton ({ user }) {
                 ?
                     (
                         <GreenTooltip title='Unfollow' enterDelay={1000} leaveDelay={500}>
-                            <IconButton aria-label='text' onClick={handleUnfollowButton} style={{color: green[500]}} disabled={!authenticated}>
-                                <ToggleIcon on={hovering} onIcon={<CloseIcon/>} offIcon={<CheckIcon />}/>
-                            </IconButton>
+                            {/* div is there so that when the button is disabled, the green tooltip still has something to attach to */}
+                            <div>
+                                <IconButton aria-label='text' onClick={handleUnfollowButton} style={{color: green[500]}} disabled={!authenticated}>
+                                    <ToggleIcon on={hovering} onIcon={<CloseIcon/>} offIcon={<CheckIcon />}/>
+                                </IconButton>
+                            </div>
+
+                            
                         </GreenTooltip>
 
                     )
                 :
                     <GreenTooltip title='Follow' enterDelay={1000} leaveDelay={500}>
-                        <IconButton aria-label='follow' onClick={handleFollowButton} style={{color: authenticated ? green[500] : '#dbdbdb'}} disabled={!authenticated}>
-                            <AddIcon fontSize='large' />
-                        </IconButton>
+                        <div>
+                            <IconButton aria-label='follow' onClick={handleFollowButton} style={{color: authenticated ? green[500] : '#dbdbdb'}} disabled={!authenticated}>
+                                <AddIcon fontSize='large' />
+                            </IconButton>
+                        </div>
                     </GreenTooltip>
             }
         </div>

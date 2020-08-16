@@ -92,8 +92,7 @@ public class UserDataAccessService implements UserDao {
             );
             return users.get(0);
 
-        } catch (SQLException sqle) {
-            sqle.printStackTrace();
+        } catch (SQLException e) {
             return new User("404", "404");
         }
 
@@ -194,6 +193,24 @@ public class UserDataAccessService implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
             return new User("404", "404"); //todo do something better
+        }
+    }
+
+    @Override
+    public boolean updateUserSettings(String email, String name, String bio) {
+        String sql = "UPDATE users SET username=?, bio=? WHERE email=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    name,
+                    bio,
+                    email
+            );
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

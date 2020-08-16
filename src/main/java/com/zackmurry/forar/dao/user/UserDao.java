@@ -28,4 +28,6 @@ public interface UserDao {
 
     User findUserByEmail(String email);
 
+    boolean updateUserSettings(String email, String name, String bio);
+
 }

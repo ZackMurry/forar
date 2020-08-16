@@ -20,6 +20,7 @@ const styles = theme => ({
 //todo add bio and stuff
 //todo add another page for the current user's page (at /me or something)
 //todo add functionality for users to put links to their instagrams and stuff
+//todo return to home page if user not found
 function UserPage () {
     
     
@@ -84,7 +85,7 @@ function UserPage () {
                         component='pre'
                         style={{textDecoration: 'underline', textDecorationColor: green[700], paddingLeft: '3vh'} /* underline the same as avatar color? */}
                     >
-                        {user.username + ' '}
+                        {user.username ? user.username : '              ' + ' '}
                     </Typography> 
 
             </Grid>

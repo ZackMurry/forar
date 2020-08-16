@@ -29,3 +29,11 @@ CREATE TABLE follows (
     follower_email VARCHAR(320) NOT NULL,
     following_email VARCHAR(320) NOT NULL
 );
+
+CREATE TABLE bugs (
+    id BIGSERIAL NOT NULL PRIMARY KEY,
+    title VARCHAR(100) NOT NULL,
+    notes VARCHAR(400) DEFAULT '',
+    moment TIMESTAMP DEFAULT CURRENT_TIMESTAMP(1),
+    count INT DEFAULT 1
+);

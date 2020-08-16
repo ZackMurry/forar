@@ -2,11 +2,15 @@ import React, { useEffect } from 'react'
 import { Paper, Grid, TextField, FormLabel, Typography, Button } from '@material-ui/core'
 import { GlobalContext } from '../../context/GlobalState'
 
+//todo link from somewhere, probably MePage.js
 export default function AccountSettings () {
 
     const { authenticated } = React.useContext(GlobalContext)
 
     const [ user, setUser ] = React.useState('')
+    const [ newName, setNewName ] = React.useState('')
+    const [ newBio, setNewBio ] = React.useState('')
+    const [ submited, setSubmitted ] = React.useState(false)
 
     useEffect(() => {
         async function getData() {
@@ -22,38 +26,88 @@ export default function AccountSettings () {
                     console.log(e)
                 }
             }
+            else {
+                window.location.href = '//' + window.location.hostname + ':8080' + '/oauth2/authorization/okta'; //todo change for hosting
+            }
         }
         getData()
     }, [ user, setUser, authenticated ]
-)
+    )
+
+    const handleChange = (event) => {
+        const name = event.target.name
+        const value = event.target.value
+        if(name === 'bio') setNewBio(value)
+        else if(name === 'name') setNewName(value)
+        console.log(value)
+    }
+
+    const handleSubmit = (event) => {
+        const requestOptions = {
+            method: 'OPTIONS',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                username: newName ? newName : user.username,
+                bio: newBio ? newBio : user.bio
+            })
+        }
+        fetch('/api/v1/users/current/settings', requestOptions).then(response => response ? setSubmitted(true) : setSubmitted(false)).catch(err => console.log(err))
+
+        event.preventDefault()
+    }
 
     return (
         <Grid container justify = "center"
-                            spacing={0}
-                            direction="column"
-                            alignItems="center"
-                            style={{ minHeight: '82.5vh' }}
-                        >
+            spacing={0}
+            direction="column"
+            alignItems="center"
+            style={{ minHeight: '82.5vh' }}
+        >
             <Paper elevation={5} style={{padding: 50, alignContent: 'center', alignItems: 'center'}}>
-                <Typography variant='h4' style={{margin: 25}}>
-                    Edit settings
-                </Typography>
                 {
                     user &&
-                        <form id='settings' style={{textAlign: 'center'}}>
-                            <div style={{display: 'inline-flex'}}>
-                                <FormLabel style={{marginRight: 10, marginTop: 8.5}}>
-                                    Bio
-                                </FormLabel>
-                                <TextField id='bio' multiline defaultValue={user ? user.bio : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
-                            </div>
-                            <div style={{display: 'block', margin: 25, marginTop: 35}}>
-                                <Button variant='contained' color='primary' label='submit' type='submit'>
-                                    Save changes
-                                </Button>
-                            </div>                            
-                        </form>
-                    }
+                        <div>
+                            <Typography variant='h4' style={{margin: 25, textAlign: 'center'}}>
+                                Edit settings
+                            </Typography>
+                            <form onSubmit={handleSubmit} onChange={handleChange} id='settings' style={{textAlign: 'center'}}>
+
+                                {/* name */}
+                                <div style={{display: 'inline-flex'}}>
+                                    <FormLabel style={{marginRight: 10, marginTop: 8.5}}>
+                                        Name
+                                    </FormLabel>
+                                    <TextField id='name' name='name' multiline spellCheck={false} defaultValue={user ? user.username : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
+                                </div>
+
+                                <br />
+
+                                {/* bio */}
+                                <div style={{display: 'inline-flex', margin: 20}}>
+                                    <FormLabel style={{marginRight: 30, marginTop: 8.5}}>
+                                        Bio
+                                    </FormLabel>
+                                    <TextField id='bio' name='bio' multiline defaultValue={user ? user.bio : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
+                                </div>
+                                
+                                {/* submit */}
+                                <div style={{display: 'block', margin: 25, marginTop: 35}}>
+                                    <Button variant='contained' color='primary' label='submit' type='submit' style={{color: 'white'}}>
+                                        Save changes
+                                    </Button>
+                                </div>                            
+                            </form>
+                        </div>
+                }
+
+                {
+                    !user &&
+                        <div>
+                            <Typography variant='h3' style={{margin: 100, textAlign: 'center'}} >
+                                Redirecting to login page...
+                            </Typography>
+                        </div>
+                }
             </Paper>
         </Grid>
     )

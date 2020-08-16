@@ -53,4 +53,8 @@ public class UserService {
     public User findUserByEmail(String email) {
         return userDao.findUserByEmail(email);
     }
+
+    public boolean updateUserSettings(String email, String name, String bio) {
+        return userDao.updateUserSettings(email, name, bio);
+    }
 }
