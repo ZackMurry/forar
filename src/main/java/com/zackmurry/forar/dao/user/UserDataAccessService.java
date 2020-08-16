@@ -85,7 +85,8 @@ public class UserDataAccessService implements UserDao {
                             resultSet.getString(1), //email. unless this starts at 0...
                             resultSet.getString(2), //username
                             resultSet.getInt(3), //points
-                            resultSet.getString(4) //role
+                            resultSet.getString(4), //role
+                            resultSet.getString(5) //bio
                     ),
                     username
             );
@@ -151,6 +152,48 @@ public class UserDataAccessService implements UserDao {
             );
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean setBio(String bio, String email) {
+        String sql = "UPDATE users SET bio=? WHERE email=?";
+
+        try {
+            jdbcTemplate.execute(
+                    sql,
+                    bio,
+                    email
+            );
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+    }
+
+    @Override
+    public User findUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email=? ORDER BY points DESC LIMIT 1";
+
+        try {
+            //this will be of length 1 bc of limit
+            List<User> users = jdbcTemplate.query(
+                    sql,
+                    resultSet -> new User(
+                            resultSet.getString(1), //email. unless this starts at 0...
+                            resultSet.getString(2), //username
+                            resultSet.getInt(3), //points
+                            resultSet.getString(4), //role
+                            resultSet.getString(5) //bio
+                    ),
+                    email
+            );
+            return users.get(0);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new User("404", "404"); //todo do something better
         }
     }
 }

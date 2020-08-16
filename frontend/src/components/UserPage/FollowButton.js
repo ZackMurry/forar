@@ -2,11 +2,11 @@ import React, { useEffect, useContext } from 'react'
 import CheckIcon from '@material-ui/icons/Check';
 import green from '@material-ui/core/colors/green'
 import CloseIcon from '@material-ui/icons/Close';
-import GreenTooltip from './GreenTooltip';
+import GreenTooltip from '../GreenTooltip';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton'
-import ToggleIcon from './ToggleIcon'
-import { GlobalContext } from '../context/GlobalState';
+import ToggleIcon from '../ToggleIcon'
+import { GlobalContext } from '../../context/GlobalState';
 
 
 export default function FollowButton ({ user }) {
@@ -18,7 +18,6 @@ export default function FollowButton ({ user }) {
 
     useEffect(() => {
         async function getData() {
-            console.log('data')
             if(authenticated) {
                 //calling api to see if following
                 const response = await fetch('/api/v1/follows/user/follows/' + user.email)
@@ -39,7 +38,7 @@ export default function FollowButton ({ user }) {
         }
         
 
-        }, [ following, setFollowing, authenticated, gotData, setGotData ]
+        }, [ following, setFollowing, authenticated, gotData, setGotData, user.email ]
     )
 
     const handleFollowButton = async () => {
@@ -100,7 +99,7 @@ export default function FollowButton ({ user }) {
                     )
                 :
                     <GreenTooltip title='Follow' enterDelay={1000} leaveDelay={500}>
-                        <IconButton aria-label='follow' onClick={handleFollowButton} style={{color: green[500]}}>
+                        <IconButton aria-label='follow' onClick={handleFollowButton} style={{color: authenticated ? green[500] : '#dbdbdb'}} disabled={!authenticated}>
                             <AddIcon fontSize='large' />
                         </IconButton>
                     </GreenTooltip>

@@ -12,6 +12,7 @@ import PlainSnackbar from './PlainSnackbar'
 //todo post editing?
 //todo make posts wider on mobile/smaller screens.
 //todo follow user from the post
+//todo put some of these things in different components
 export default function Post({ post, updateList, showSnackbar }) {
 
     const { authenticated, email } = React.useContext(GlobalContext)
@@ -21,18 +22,19 @@ export default function Post({ post, updateList, showSnackbar }) {
 
     const theme = useTheme()
     
-    const getLiked = async () => {
-        if(!authenticated) return 0;
-        const response = await fetch('/api/v1/likes/post/' + post.id)
-        const body = await response.text()
-        setLiked(JSON.parse(body))
-    }
+    
 
     useEffect(() => {
         if (liked === '-2') {
+            async function getLiked() {
+                if(!authenticated) return 0;
+                const response = await fetch('/api/v1/likes/post/' + post.id)
+                const body = await response.text()
+                setLiked(JSON.parse(body))
+            }
             getLiked()
         }
-      }, [getLiked, setLiked, liked, authenticated, post]
+      }, [ setLiked, liked, authenticated, post]
     );
 
     const handleLikeButton = async () => {

@@ -4,7 +4,6 @@ import { Button, Toolbar, ThemeProvider } from '@material-ui/core'
 import {AppBar, Typography } from '@material-ui/core'
 import { withCookies} from 'react-cookie';
 import  {theme} from './../theme'
-import { Redirect } from "react-router-dom";
 import { GlobalContext } from '../context/GlobalState';
 
 var Logo = './ForarIconWhite.png' //todo change this to a non-copywrited image if i wanna host
@@ -18,24 +17,23 @@ class NavigationBar extends React.Component {
     super();
     this.state = {
       loginRedirect: null,
-      isAuthenticated: false,
-      homePageRedirect: false
+      isAuthenticated: false
     }
     const {cookies} = props;
     this.state.csrfToken = cookies.get('XSRF-TOKEN')
     this.login = this.login.bind(this)
     this.logout = this.logout.bind(this)
-    this.handleLogoClick = this.handleLogoClick.bind(this)
-    this.handleHomePageRedirect = this.handleHomePageRedirect.bind(this)
   }
 
 
   async componentDidMount() {
+
+    this.setState({homePageRedirect: false})
     const response = await fetch('/api/v1/user');
     const body = await response.text();
     console.log(body)
     console.log(response)
-    const { authenticated, setAuthenticated, setUsername, email, setEmail } = this.context
+    const { authenticated, setAuthenticated, setUsername, setEmail } = this.context
 
     if (body === ' ' || body === null) {
       this.setState(({isAuthenticated: false}))
@@ -70,6 +68,7 @@ class NavigationBar extends React.Component {
       port = ':8080';
     }
     //window.location.href = '//' + window.location.hostname + port + '/login';
+    //todo probly replace this with window.location.origin + '/oauth2...'
     window.location.href = '//' + window.location.hostname + port + '/oauth2/authorization/okta';
   }
 
@@ -82,13 +81,8 @@ class NavigationBar extends React.Component {
       });
   }
 
-  handleLogoClick() {
-    this.setState({homePageRedirect: true})
-  }
 
-  handleHomePageRedirect() {
-    this.setState({homePageRedirect: false})
-  }
+
 
   render() {
     const style = {
@@ -102,16 +96,6 @@ class NavigationBar extends React.Component {
       color: '#ffffff'
     }
 
-    
-    if(this.state.loginRedirect) {
-      //todo might need to setState this to false here
-      return <Redirect to={this.state.loginRedirect} />
-    }
-    if(this.state.homePageRedirect) {
-      this.handleHomePageRedirect()
-      return <Redirect push to='/' />
-    }
-
     return (
       <ThemeProvider theme={theme}>
         <div>
@@ -119,7 +103,8 @@ class NavigationBar extends React.Component {
             <Toolbar>
               {/* todo align button in the middle (vertically) */}
               <button style={{backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', position: 'relative', top: '50%', transform: 'translateY(+6.25%)'}}>
-                <img src={Logo} style={{paddingRight: 10}} alt="icon-white" onClick={this.handleLogoClick}/>
+                {/* redirect only works because it's origin is the home page */}
+                <img src={Logo} style={{paddingRight: 10}} alt="icon-white" onClick={() => window.location.href = window.location.origin}/>
               </button>
               <Typography variant="h4" style={style}>
                 Forar

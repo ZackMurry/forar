@@ -24,4 +24,8 @@ public interface UserDao {
 
     void decrementPoints(String email, int amount);
 
+    boolean setBio(String bio, String email);
+
+    User findUserByEmail(String email);
+
 }

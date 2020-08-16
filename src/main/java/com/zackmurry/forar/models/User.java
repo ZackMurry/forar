@@ -21,6 +21,17 @@ public class User {
     @Column(name="account_role")
     private String role;
 
+    @Column
+    private String bio;
+
+    public User(String email, String username, int points, String role, String bio) {
+        this.email = email;
+        this.username = username;
+        this.points = points;
+        this.role = role;
+        this.bio = bio;
+    }
+
     public User(String email, String username, int points, String role) {
         this.email = email;
         this.username = username;
@@ -68,5 +79,13 @@ public class User {
 
     public void setPoints(int points) {
         this.points = points;
+    }
+
+    public String getBio() {
+        return bio;
+    }
+
+    public void setBio(String bio) {
+        this.bio = bio;
     }
 }

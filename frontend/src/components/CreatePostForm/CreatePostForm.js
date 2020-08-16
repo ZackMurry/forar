@@ -15,7 +15,6 @@ import PlainSnackbar from '../PlainSnackbar'
 
 //todo figure out how to use roboto lol
 //todo pasting allows for text above char limit
-//todo add snackbar on post upload
 
 const MAX_TITLE_LENGTH = 125
 
@@ -167,7 +166,6 @@ class CreatePostForm extends React.Component {
                     </AccordionDetails>
                 </Accordion>
                 <div>
-                    {/* todo change snackbar color to green */}
                     <PlainSnackbar
                         message='Post created. Refreshing...'
                         duration={5000}

@@ -46,4 +46,11 @@ public class UserService {
         userDao.decrementPoints(email, amount);
     }
 
+    public boolean setBio(String bio, String email) {
+        return userDao.setBio(bio, email);
+    }
+
+    public User findUserByEmail(String email) {
+        return userDao.findUserByEmail(email);
+    }
 }

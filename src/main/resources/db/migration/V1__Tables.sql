@@ -2,7 +2,8 @@ CREATE TABLE users (
     email VARCHAR(320) NOT NULL PRIMARY KEY,
     username VARCHAR(100) NOT NULL,
     points INT DEFAULT 0,
-    account_role VARCHAR(100) NOT NULL
+    account_role VARCHAR(100) NOT NULL,
+    bio VARCHAR(250)
 );
 
 CREATE TABLE posts (

@@ -5,12 +5,12 @@ import com.zackmurry.forar.models.User;
 import com.zackmurry.forar.services.PostService;
 import com.zackmurry.forar.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 //todo bios and profile colors/pics
 
@@ -30,10 +30,28 @@ public class UserController {
         return userService.findUserByUsername(username);
     }
 
+    @GetMapping("/email/{email}")
+    public User getUserByEmail(@PathVariable("email") String email) {
+        return userService.findUserByEmail(email);
+    }
+
     @GetMapping("/name/{username}/posts")
     public List<Post> getPostsByName(@PathVariable("username") String username) {
         User user = userService.findUserByUsername(username);
         return postService.getPostsByEmail(user.getEmail());
+    }
+
+    //todo add method for admin
+    @PostMapping("/bio")
+    public boolean setUserBio(@RequestBody Map<String, String> map, @AuthenticationPrincipal OidcUser principal) {
+        String newBio = map.get("bio");
+        String email = principal.getEmail();
+        return userService.setBio(newBio, email);
+    }
+
+    @GetMapping("/current")
+    public User getCurrentUser(@AuthenticationPrincipal OidcUser principal) {
+        return userService.findUserByEmail(principal.getEmail());
     }
 
 }
