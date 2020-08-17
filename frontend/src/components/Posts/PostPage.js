@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from "react-router-dom";
-import Post from './Post';
+import Post from './Post'
 
 //todo handle 404s on this end too
 export default function PostPage () {

@@ -3,7 +3,7 @@ import { withCookies} from 'react-cookie';
 import { withRouter } from 'react-router-dom'
 import CreatePostForm from './CreatePostForm/CreatePostForm.js';
 import { GlobalContext } from '../context/GlobalState.js';
-import PostList from './PostList'
+import PostList from './Posts/PostList'
 
 class MainPage extends React.Component {
   

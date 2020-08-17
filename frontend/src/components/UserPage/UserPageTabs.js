@@ -1,5 +1,5 @@
 import React from 'react'
-import Post from '../Post'
+import Post from '../Posts/Post'
 import { Typography, AppBar, Tabs, Tab, Fade, Grow, withStyles } from '@material-ui/core';
 import green from '@material-ui/core/colors/green'
 

@@ -3,11 +3,12 @@ import { Card, CardHeader, CardContent, CardActions, Typography, IconButton } fr
 import { ThemeProvider, useTheme } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { Link } from 'react-router-dom'
-import { GlobalContext } from '../context/GlobalState'
-import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy, Delete } from '@material-ui/icons'; //todo separate these into stuff like 'import Delete from '@material-ui/icons/Delete'
-import GreenTooltip from './GreenTooltip'
-import UserAvatar from './UserAvatar'
-import PlainSnackbar from './PlainSnackbar'
+import { GlobalContext } from '../../context/GlobalState'
+import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy, Delete, Edit } from '@material-ui/icons'; //todo separate these into stuff like 'import Delete from '@material-ui/icons/Delete'
+import GreenTooltip from '../GreenTooltip'
+import UserAvatar from '../UserAvatar'
+import PlainSnackbar from '../PlainSnackbar'
+import PostFollowButton from './PostFollowButton'
 
 //todo post editing?
 //todo make posts wider on mobile/smaller screens.
@@ -19,6 +20,7 @@ export default function Post({ post, updateList, showSnackbar }) {
     const [ liked, setLiked ] = React.useState('-2')
     const [ likeError, setLikeError ] = React.useState(false)
     const [ deleteError, setDeleteError ] = React.useState(false)
+    const [ followingPoster, setFollowingPoster ] = React.useState(false)
 
     const theme = useTheme()
     
@@ -26,13 +28,24 @@ export default function Post({ post, updateList, showSnackbar }) {
 
     useEffect(() => {
         if (liked === '-2') {
-            async function getLiked() {
-                if(!authenticated) return 0;
-                const response = await fetch('/api/v1/likes/post/' + post.id)
-                const body = await response.text()
-                setLiked(JSON.parse(body))
+            async function getData() {
+                //getting if the principal likes the post
+                if(!authenticated) {
+                    setLiked(0);
+                    setFollowingPoster(false)
+                    return;
+                }
+                const likeResponse = await fetch('/api/v1/likes/post/' + post.id)
+                const likeBody = await likeResponse.text()
+                try {
+                    setLiked(JSON.parse(likeBody))
+                } catch (e) {
+                    console.log(e)
+                }
+
+                
             }
-            getLiked()
+            getData()
         }
       }, [ setLiked, liked, authenticated, post]
     );
@@ -211,6 +224,13 @@ export default function Post({ post, updateList, showSnackbar }) {
                                 <Link to={"/users/" + post.username.split(' ').join('_&_')} className='user_link' style={{color: '#757575'}}>{post.username}</Link>
                                 <b>{' —— ' + post.simpleTime}</b>
                             </div>
+                        }
+                        action={
+                            post.email == email ? 
+                            // todo post editing and put tooltips here
+                                <Edit style={{margin: 15, color: green[500]}} /> 
+                            : 
+                                <PostFollowButton email={post.email}/>
                         }
                     >
                     </CardHeader>

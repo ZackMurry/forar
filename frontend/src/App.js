@@ -12,7 +12,7 @@ import { GlobalProvider } from './context/GlobalState'
 import { ThemeProvider } from '@material-ui/core'
 import {theme} from './theme'
 import UserPage from './components/UserPage/UserPage'
-import PostPage from './components/PostPage'
+import PostPage from './components/Posts/PostPage'
 import AccountSettings from './components/Account/AccountSettings'
 
 /*const config = {
