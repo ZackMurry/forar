@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -71,5 +72,28 @@ public class FollowDataAccessService implements FollowDao {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * Queries Postgres for emails of people following the provided email
+     *
+     * @param email email to find followers of
+     * @return list of emails of the user's followers
+     */
+    @Override
+    public List<String> getFollowerEmailsByUser(String email) {
+        String sql = "SELECT * FROM follows WHERE following_email=?";
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    resultSet -> resultSet.getString(2),
+                    email
+            );
+        } catch (SQLException sqle) {
+            sqle.printStackTrace();
+            return new ArrayList<>();
+        }
+
     }
 }

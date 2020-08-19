@@ -8,7 +8,7 @@ export default function UserAvatar({ username, width, height, fontSize }) {
     return (
         <Avatar style={{backgroundColor: green[500], width: width ? width : null, height: height ? height : null}} alt=''>
             <Typography style={{fontSize: fontSize}}>
-                {username.substring(0,1)}
+                {username ? username.substring(0,1) : ''}
             </Typography>
         </Avatar>
     )

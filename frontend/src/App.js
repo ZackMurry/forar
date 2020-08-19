@@ -14,6 +14,7 @@ import {theme} from './theme'
 import UserPage from './components/UserPage/UserPage'
 import PostPage from './components/Posts/PostPage'
 import AccountSettings from './components/Account/AccountSettings'
+import FollowerPage from './components/UserPage/Followers/FollowerPage'
 
 /*const config = {
   issuer: 'http://localhost:8080/login/oauth2/code/okta',
@@ -43,7 +44,8 @@ function App() {
                 <Route path="/me" component={MePage} exact />
                 <Route path="/me/settings" component={AccountSettings} exact />
                 <Route path="/signup" component={SignUp} />
-                <Route path="/users/:username" component={UserPage} />
+                <Route path="/users/:email/followers" component={FollowerPage} />
+                <Route path="/users/:email" component={UserPage} />
                 <Route path="/posts/:id" component={PostPage} />
                 <Route component={Error} />
               </Switch>

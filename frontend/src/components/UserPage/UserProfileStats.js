@@ -14,7 +14,7 @@ export default function UserProfileStats ({ user }) {
                 {'point' + (user.points !== 1 ? 's' : '') /* because 1 isn't plural */}
             </Typography>
 
-            <Link to="/" style={{display: 'inline-flex', textDecoration: 'none', marginLeft: '1%'}}> {/* link to the page that shows users followers */}
+            <Link to={`/users/${user.email}/followers`} style={{display: 'inline-flex', textDecoration: 'none', marginLeft: '1%'}}> {/* link to the page that shows users followers */}
                 <Typography variant='h5' style={{color: green[700], fontWeight: 'bold'}}>
                     21
                 </Typography>

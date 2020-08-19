@@ -1,5 +1,6 @@
 package com.zackmurry.forar.controller;
 
+import com.zackmurry.forar.models.User;
 import com.zackmurry.forar.services.FollowService;
 import com.zackmurry.forar.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,10 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
-//todo get all followers by email
+import java.util.ArrayList;
+import java.util.List;
+
+//todo get follow count (maybe just return it with the user)
 //todo get all following by email
 
 @RestController
@@ -75,5 +79,22 @@ public class FollowController {
 
         return followService.unfollowUser(principalEmail, emailToUnfollow);
     }
+
+    /**
+     * gets followers by a user email. used by frontend to show the user's followers
+     *
+     * @param email email of the user whose emails you want to get
+     * @return a list of users
+     */
+    @GetMapping("/user/{userEmail}/followers")
+    public List<User> getFollowersByUser(@PathVariable("userEmail") String email) {
+        List<String> followerEmails = followService.getFollowerEmailsByUser(email);
+        if(followerEmails.size() == 0) return new ArrayList<>();
+        return userService.getUsersByEmails(followerEmails);
+    }
+
+
+
+
 
 }

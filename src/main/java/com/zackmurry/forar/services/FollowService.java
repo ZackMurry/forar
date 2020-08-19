@@ -1,8 +1,11 @@
 package com.zackmurry.forar.services;
 
 import com.zackmurry.forar.dao.follow.FollowDao;
+import com.zackmurry.forar.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class FollowService {
@@ -20,5 +23,9 @@ public class FollowService {
 
     public boolean unfollowUser(String followerEmail, String emailToUnfollow) {
         return followDao.unfollowUser(followerEmail, emailToUnfollow);
+    }
+
+    public List<String> getFollowerEmailsByUser(String email) {
+        return followDao.getFollowerEmailsByUser(email);
     }
 }

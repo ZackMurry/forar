@@ -1,10 +1,11 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import { Button, Toolbar, ThemeProvider } from '@material-ui/core'
+import { Button, Toolbar, ThemeProvider, MenuList, MenuItem } from '@material-ui/core'
 import {AppBar, Typography } from '@material-ui/core'
-import { withCookies} from 'react-cookie';
 import  {theme} from './../theme'
 import { GlobalContext } from '../context/GlobalState';
+import NavigationBarMenu from './NavigationBarMenu';
+import LogInOutButton from './LogInOutButton';
 
 var Logo = './ForarIconWhite.png' //todo change this to a non-copywrited image if i wanna host
 
@@ -19,10 +20,6 @@ class NavigationBar extends React.Component {
       loginRedirect: null,
       isAuthenticated: false
     }
-    const {cookies} = props;
-    this.state.csrfToken = cookies.get('XSRF-TOKEN')
-    this.login = this.login.bind(this)
-    this.logout = this.logout.bind(this)
   }
 
 
@@ -62,24 +59,7 @@ class NavigationBar extends React.Component {
   }
 
 
-  login() {
-    let port = (window.location.port ? ':' + window.location.port : '');
-    if (port === ':3000') {
-      port = ':8080';
-    }
-    //window.location.href = '//' + window.location.hostname + port + '/login';
-    //todo probly replace this with window.location.origin + '/oauth2...'
-    window.location.href = '//' + window.location.hostname + port + '/oauth2/authorization/okta';
-  }
-
-  logout() {
-    fetch('/api/v1/logout', {method: 'POST', credentials: 'include',
-      headers: {'X-XSRF-TOKEN': this.state.csrfToken}}).then(res => res.json())
-      .then(response => {
-        window.location.href = response.logoutUrl + "?id_token_hint=" +
-          response.idToken + "&post_logout_redirect_uri=" + window.location.origin;
-      });
-  }
+  
 
 
 
@@ -92,9 +72,7 @@ class NavigationBar extends React.Component {
       marginRight: 6
     }
 
-    const whiteStyle = {
-      color: '#ffffff'
-    }
+    
 
     return (
       <ThemeProvider theme={theme}>
@@ -109,12 +87,7 @@ class NavigationBar extends React.Component {
               <Typography variant="h4" style={style}>
                 Forar
               </Typography>
-              <Button 
-                style={whiteStyle} 
-                onClick={this.state.isAuthenticated ? this.logout : this.login}
-                >
-                {this.state.isAuthenticated ? "Logout" : "Login" }
-              </Button>
+              <NavigationBarMenu />
             </Toolbar>
           </AppBar>
         </div>
@@ -128,4 +101,4 @@ class NavigationBar extends React.Component {
 }
 
 
-export default withCookies(withRouter(NavigationBar))
+export default withRouter(NavigationBar)

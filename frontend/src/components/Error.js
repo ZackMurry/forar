@@ -2,7 +2,7 @@ import React from 'react'
 import { Grid, Typography, Snackbar } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { GlobalContext } from '../context/GlobalState'
-import PlainSnackbar from './PlainSnackbar'
+import PlainSnackbar from './Snackbars/PlainSnackbar'
 
 const clickableTextStyle = {
     cursor: 'pointer', 

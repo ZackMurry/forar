@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 import { withCookies } from 'react-cookie'
 import { withRouter } from 'react-router'
 import { GlobalContext } from '../../context/GlobalState'
-import PlainSnackbar from '../PlainSnackbar'
+import PlainSnackbar from '../Snackbars/PlainSnackbar'
 
 //todo figure out how to use roboto lol
 //todo pasting allows for text above char limit

@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+//todo get most recent posts by following
+
 @RestController
 @RequestMapping("/api/v1/posts")
 public class PostController {

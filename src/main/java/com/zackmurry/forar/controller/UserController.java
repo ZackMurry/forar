@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 //todo bios and profile colors/pics
+//todo check email url compatibility
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -32,6 +33,7 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable("email") String email) {
+        System.out.println(email);
         return userService.findUserByEmail(email);
     }
 
@@ -39,6 +41,11 @@ public class UserController {
     public List<Post> getPostsByName(@PathVariable("username") String username) {
         User user = userService.findUserByUsername(username);
         return postService.getPostsByEmail(user.getEmail());
+    }
+
+    @GetMapping("/email/{email}/posts")
+    public List<Post> getPostsByEmail(@PathVariable("email") String email) {
+        return postService.getPostsByEmail(email);
     }
 
     //todo add method for admin

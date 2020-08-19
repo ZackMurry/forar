@@ -28,33 +28,33 @@ function UserPage () {
     const [ posts, setPosts ] = React.useState([])
     const [ likedPosts, setLikedPosts ] = React.useState([])
     const [ dislikedPosts, setDislikedPosts ] = React.useState([])
-    const { username } = useParams();
+    const { email } = useParams();
 
     useEffect(() => {
         async function getData() {
             if (!user) {
                 //todo probly make snackbars for if these fail using try catches
 
-                const userResponse = await fetch('/api/v1/users/name/' + username) //todo probly change handling to email
+                const userResponse = await fetch('/api/v1/users/email/' + email)
                 const userBody = await userResponse.text()
                 const userParsed = JSON.parse(userBody)
                 if(userBody) {
                     setUser(userParsed)
                 } else console.log('set user failed')
                 
-                const dislikedResponse = await fetch('/api/v1/likes/user/' + userParsed.email + '/dislikes')
+                const dislikedResponse = await fetch('/api/v1/likes/user/' + email + '/dislikes')
                 const dislikedBody = await dislikedResponse.text()
                 if(dislikedBody) {
                     setDislikedPosts(JSON.parse(dislikedBody))
                 } else console.log('set disliked posts failed')
 
-                const likedResponse = await fetch('/api/v1/likes/user/' + userParsed.email + '/likes') //have to use JSON.parse because setUser hasn't been updated yet
+                const likedResponse = await fetch('/api/v1/likes/user/' + email + '/likes')
                 const likedBody = await likedResponse.text()
                 if(likedBody) {
                     setLikedPosts(JSON.parse(likedBody))
                 } else console.log('set liked posts failed')
 
-                const postsResponse = await fetch('/api/v1/users/name/' + username + '/posts')
+                const postsResponse = await fetch('/api/v1/users/email/' + email + '/posts')
                 const postsBody = await postsResponse.text()
                 if(postsBody) {
                     setPosts(JSON.parse(postsBody))  
@@ -64,7 +64,7 @@ function UserPage () {
             }
         }
         getData()
-      }, [user, setUser, posts, setPosts, likedPosts, setLikedPosts, dislikedPosts, setDislikedPosts, username]
+      }, [user, setUser, posts, setPosts, likedPosts, setLikedPosts, dislikedPosts, setDislikedPosts, email]
     );
 
     
@@ -79,7 +79,7 @@ function UserPage () {
             
             {/* using vh for horizontal components because i want to make the avatar a circle */}
             <Grid container direction="row" alignItems="center" style={{paddingLeft: '5vh'}}>
-                    <UserAvatar username={username} height='20vh' width='20vh' fontSize={96}/>
+                    <UserAvatar username={user.username} height='20vh' width='20vh' fontSize={96}/>
                     <Typography 
                         variant='h1' 
                         component='pre'

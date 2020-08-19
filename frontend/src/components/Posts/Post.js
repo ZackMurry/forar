@@ -7,7 +7,7 @@ import { GlobalContext } from '../../context/GlobalState'
 import { ThumbUpOutlined, ThumbUp, ThumbDownOutlined, ThumbDown, Share, FileCopy, Delete, Edit } from '@material-ui/icons'; //todo separate these into stuff like 'import Delete from '@material-ui/icons/Delete'
 import GreenTooltip from '../GreenTooltip'
 import UserAvatar from '../UserAvatar'
-import PlainSnackbar from '../PlainSnackbar'
+import PlainSnackbar from '../Snackbars/PlainSnackbar'
 import PostFollowButton from './PostFollowButton'
 
 //todo post editing?
@@ -214,14 +214,14 @@ export default function Post({ post, updateList, showSnackbar }) {
                 <Card style={{width: '42.5%'}} elevation={3}>
                     <CardHeader
                         avatar={
-                            <UserAvatar username={post.username}/>
+                            <UserAvatar username={post.username ? post.username : ' '}/>
                         }
                         title={
                             <Typography variant='h5' style={{margin: 0}}>{post.title}</Typography>
                         }
                         subheader={
                             <div style={{display: 'inline-block', float: 'left'}}>
-                                <Link to={"/users/" + post.username.split(' ').join('_&_')} className='user_link' style={{color: '#757575'}}>{post.username}</Link>
+                                <Link to={"/users/" + post.email} className='user_link' style={{color: '#757575'}}>{post.username}</Link>
                                 <b>{' —— ' + post.simpleTime}</b>
                             </div>
                         }

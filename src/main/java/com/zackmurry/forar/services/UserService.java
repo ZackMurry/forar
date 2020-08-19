@@ -57,4 +57,14 @@ public class UserService {
     public boolean updateUserSettings(String email, String name, String bio) {
         return userDao.updateUserSettings(email, name, bio);
     }
+
+    /**
+     * gets a list of users by a list of their emails in a random order
+     *
+     * @param emails list of emails of users to get
+     * @return a list with the users which were requested
+     */
+    public List<User> getUsersByEmails(List<String> emails) {
+        return userDao.getUsersByEmails(emails);
+    }
 }

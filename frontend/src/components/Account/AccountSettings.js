@@ -1,16 +1,18 @@
-import React, { useEffect } from 'react'
-import { Paper, Grid, TextField, FormLabel, Typography, Button } from '@material-ui/core'
+import React, { useEffect, useState } from 'react'
+import { Paper, Grid, TextField, FormLabel, Typography, Button, Snackbar } from '@material-ui/core'
 import { GlobalContext } from '../../context/GlobalState'
+import PlainSnackbar from '../Snackbars/PlainSnackbar'
 
 //todo link from somewhere, probably MePage.js
 export default function AccountSettings () {
 
     const { authenticated } = React.useContext(GlobalContext)
 
-    const [ user, setUser ] = React.useState('')
-    const [ newName, setNewName ] = React.useState('')
-    const [ newBio, setNewBio ] = React.useState('')
-    const [ submited, setSubmitted ] = React.useState(false)
+    const [ user, setUser ] = useState('')
+    const [ newName, setNewName ] = useState('')
+    const [ newBio, setNewBio ] = useState('')
+    const [ submitted, setSubmitted ] = useState(false)
+    const [ showErrorSnackbar, setShowErrorSnackbar ] = useState 
 
     useEffect(() => {
         async function getData() {
@@ -52,63 +54,70 @@ export default function AccountSettings () {
             })
         }
         fetch('/api/v1/users/current/settings', requestOptions).then(response => response ? setSubmitted(true) : setSubmitted(false)).catch(err => console.log(err))
+        
+        if(!submitted) {
+            setShowErrorSnackbar(true)
+        }
 
         event.preventDefault()
     }
 
     return (
-        <Grid container justify = "center"
-            spacing={0}
-            direction="column"
-            alignItems="center"
-            style={{ minHeight: '82.5vh' }}
-        >
-            <Paper elevation={5} style={{padding: 50, alignContent: 'center', alignItems: 'center'}}>
-                {
-                    user &&
-                        <div>
-                            <Typography variant='h4' style={{margin: 25, textAlign: 'center'}}>
-                                Edit settings
-                            </Typography>
-                            <form onSubmit={handleSubmit} onChange={handleChange} id='settings' style={{textAlign: 'center'}}>
+        <>
+            <Grid container justify = "center"
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                style={{ minHeight: '82.5vh' }}
+            >
+                <Paper elevation={5} style={{padding: 50, alignContent: 'center', alignItems: 'center'}}>
+                    {
+                        user &&
+                            <div>
+                                <Typography variant='h4' style={{margin: 25, textAlign: 'center'}}>
+                                    Edit settings
+                                </Typography>
+                                <form onSubmit={handleSubmit} onChange={handleChange} id='settings' style={{textAlign: 'center'}}>
 
-                                {/* name */}
-                                <div style={{display: 'inline-flex'}}>
-                                    <FormLabel style={{marginRight: 10, marginTop: 8.5}}>
-                                        Name
-                                    </FormLabel>
-                                    <TextField id='name' name='name' multiline spellCheck={false} defaultValue={user ? user.username : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
-                                </div>
+                                    {/* name */}
+                                    <div style={{display: 'inline-flex'}}>
+                                        <FormLabel style={{marginRight: 10, marginTop: 8.5}}>
+                                            Name
+                                        </FormLabel>
+                                        <TextField id='name' name='name' multiline spellCheck={false} defaultValue={user ? user.username : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
+                                    </div>
 
-                                <br />
+                                    <br />
 
-                                {/* bio */}
-                                <div style={{display: 'inline-flex', margin: 20}}>
-                                    <FormLabel style={{marginRight: 30, marginTop: 8.5}}>
-                                        Bio
-                                    </FormLabel>
-                                    <TextField id='bio' name='bio' multiline defaultValue={user ? user.bio : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
-                                </div>
-                                
-                                {/* submit */}
-                                <div style={{display: 'block', margin: 25, marginTop: 35}}>
-                                    <Button variant='contained' color='primary' label='submit' type='submit' style={{color: 'white'}}>
-                                        Save changes
-                                    </Button>
-                                </div>                            
-                            </form>
-                        </div>
-                }
+                                    {/* bio */}
+                                    <div style={{display: 'inline-flex', margin: 20}}>
+                                        <FormLabel style={{marginRight: 30, marginTop: 8.5}}>
+                                            Bio
+                                        </FormLabel>
+                                        <TextField id='bio' name='bio' multiline defaultValue={user ? user.bio : ''} style={{marginTop: 0, paddingTop: 0, verticalAlign: 'bottom', color: '#dbdbdb'}}/>
+                                    </div>
+                                    
+                                    {/* submit */}
+                                    <div style={{display: 'block', margin: 25, marginTop: 35}}>
+                                        <Button variant='contained' color='primary' label='submit' type='submit' style={{color: 'white'}}>
+                                            Save changes
+                                        </Button>
+                                    </div>                            
+                                </form>
+                            </div>
+                    }
 
-                {
-                    !user &&
-                        <div>
-                            <Typography variant='h3' style={{margin: 100, textAlign: 'center'}} >
-                                Redirecting to login page...
-                            </Typography>
-                        </div>
-                }
-            </Paper>
-        </Grid>
+                    {
+                        !user &&
+                            <div>
+                                <Typography variant='h3' style={{margin: 100, textAlign: 'center'}} >
+                                    Redirecting to login page...
+                                </Typography>
+                            </div>
+                    }
+                </Paper>
+            </Grid>
+            {/* todo add snackbar for showErrorSnackbar true */}
+        </>
     )
 }

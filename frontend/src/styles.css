@@ -48,3 +48,7 @@ a.user_link:hover, a.user_link:active {
   text-decoration: underline;
   color: #757575;
 }
+
+MuiTouchRipple-rippleVisible {
+  background-color: #fff;
+}

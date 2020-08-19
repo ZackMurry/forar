@@ -1,6 +1,8 @@
 package com.zackmurry.forar.dao.user;
 
+import com.zackmurry.forar.models.Post;
 import com.zackmurry.forar.models.User;
+import javassist.NotFoundException;
 import org.flywaydb.core.internal.jdbc.JdbcTemplate;
 import org.flywaydb.core.internal.jdbc.RowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,9 @@ import org.springframework.stereotype.Service;
 import javax.sql.DataSource;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -189,8 +194,11 @@ public class UserDataAccessService implements UserDao {
                     ),
                     email
             );
+            if(users.size() == 0) {
+                throw new NotFoundException("Cannot find any users with the email " + email + ".");
+            }
             return users.get(0);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return new User("404", "404"); //todo do something better
         }
@@ -211,6 +219,31 @@ public class UserDataAccessService implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    @Override
+    public List<User> getUsersByEmails(List<String> emails) {
+        if(emails.size() == 0) return new ArrayList<>(); //at size() == 0, the SQL wouldn't be valid and there'd be no elements anyways
+        String questionMarks = String.join(",", Collections.nCopies(emails.size(), "?"));
+
+        String sql = String.format("SELECT * FROM users WHERE email IN (%s)", questionMarks);
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    resultSet -> new User(
+                            resultSet.getString(1), //email
+                            resultSet.getString(2), //username
+                            resultSet.getInt(3), //points
+                            resultSet.getString(4), //role
+                            resultSet.getString(5) //bio
+                    ),
+                    emails.toArray()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
         }
     }
 }

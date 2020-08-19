@@ -21,8 +21,15 @@ public class BugController {
     @PostMapping("/404")
     public int report404Error(@RequestBody Map<String, String> map) {
         String url = map.get("url");
-        boolean authenticated = map.get("authenticated").equals("true");
+        boolean authenticated = map.get("authenticated").equals("true"); //changing string to boolean in .equals("true")
         return bugService.report404Error(url, authenticated);
+    }
+
+
+    @PostMapping("/account-settings-form-error")
+    public void reportSettingsFormError(@RequestBody Map<String, String> map) {
+        String url = map.get("url");
+        boolean authenticated = map.get("authenticated").equals("true");
     }
 
 }

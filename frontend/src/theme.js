@@ -7,9 +7,17 @@ export const theme = createMuiTheme({
       primary: green,
       secondary: {
         main: '#fffff'
-      }
+      },
+      hoverColor: 'red'
     },
     root: {
         fontFamily: 'Roboto'
+    },
+    overrides: {
+      MuiList: {
+        root:{
+          width: 200
+        }
+      }
     }
 });
