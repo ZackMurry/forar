@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Paper, Grid, TextField, FormLabel, Typography, Button, Snackbar } from '@material-ui/core'
+import { Paper, Grid, TextField, FormLabel, Typography, Button } from '@material-ui/core'
 import { GlobalContext } from '../../context/GlobalState'
-import PlainSnackbar from '../Snackbars/PlainSnackbar'
+import BugReportSnackbar from '../Snackbars/BugReportSnackbar'
 
-//todo link from somewhere, probably MePage.js
-export default function AccountSettings () {
+export default function AccountSettings ( props ) {
 
     const { authenticated } = React.useContext(GlobalContext)
 
@@ -12,7 +11,7 @@ export default function AccountSettings () {
     const [ newName, setNewName ] = useState('')
     const [ newBio, setNewBio ] = useState('')
     const [ submitted, setSubmitted ] = useState(false)
-    const [ showErrorSnackbar, setShowErrorSnackbar ] = useState 
+    const [ showErrorSnackbar, setShowErrorSnackbar ] = useState (false)
 
     useEffect(() => {
         async function getData() {
@@ -29,7 +28,7 @@ export default function AccountSettings () {
                 }
             }
             else {
-                window.location.href = '//' + window.location.hostname + ':8080' + '/oauth2/authorization/okta'; //todo change for hosting
+                window.location.href = '//' + window.location.hostname + ':8080/oauth2/authorization/okta'; //todo change for hosting
             }
         }
         getData()
@@ -57,9 +56,32 @@ export default function AccountSettings () {
         
         if(!submitted) {
             setShowErrorSnackbar(true)
-        }
+        } else setShowErrorSnackbar(true)
 
         event.preventDefault()
+    }
+
+    const handleSnackbarClose = (event, reason) => {
+        if(reason === 'clickaway') {
+            return;
+        }
+        setShowErrorSnackbar(false)
+    }
+
+    const handleBugReport = async () => {
+        const requestOptions = {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                url: window.location.href,
+                authenticated: authenticated
+            })
+        }
+        fetch('/api/v1/bugs/account-settings-form-error', requestOptions)
+
+        setTimeout(() => {
+            props.history.goBack() //sending user back to last page
+        }, 1000)
     }
 
     return (
@@ -117,7 +139,13 @@ export default function AccountSettings () {
                     }
                 </Paper>
             </Grid>
-            {/* todo add snackbar for showErrorSnackbar true */}
+            <BugReportSnackbar 
+                message='An error occurred while submitting form.'
+                open={showErrorSnackbar}
+                onClose={handleSnackbarClose}
+                onReport={handleBugReport}
+                duration={5000}
+            />
         </>
     )
 }

@@ -20,7 +20,6 @@ export default function Post({ post, updateList, showSnackbar }) {
     const [ liked, setLiked ] = React.useState('-2')
     const [ likeError, setLikeError ] = React.useState(false)
     const [ deleteError, setDeleteError ] = React.useState(false)
-    const [ followingPoster, setFollowingPoster ] = React.useState(false)
 
     const theme = useTheme()
     
@@ -32,7 +31,6 @@ export default function Post({ post, updateList, showSnackbar }) {
                 //getting if the principal likes the post
                 if(!authenticated) {
                     setLiked(0);
-                    setFollowingPoster(false)
                     return;
                 }
                 const likeResponse = await fetch('/api/v1/likes/post/' + post.id)
@@ -226,7 +224,7 @@ export default function Post({ post, updateList, showSnackbar }) {
                             </div>
                         }
                         action={
-                            post.email == email ? 
+                            post.email === email ? 
                             // todo post editing and put tooltips here
                                 <Edit style={{margin: 15, color: green[500]}} /> 
                             : 

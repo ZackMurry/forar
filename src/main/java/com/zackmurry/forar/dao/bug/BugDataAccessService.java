@@ -21,18 +21,14 @@ public class BugDataAccessService implements BugDao {
     }
 
     /**
-     * adds a new 404 bug into the database of bugs
+     * adds a bug to the bugs table if it is unique
+     * if the bug's been reported before, it increments the count column
      *
-     * @param url url that the 404 happened at
-     * @param authenticated whether or not the user authenticated at the time
-     * @return -1 for error, 0 for unique bug, else returns the number of times this has been reported
+     * @param title value to insert into `title` column
+     * @param notes value to insert into the `notes` column
+     * @return number of times this bug has been previously reported. -1 for error
      */
-    @Override
-    public int report404Error(String url, boolean authenticated) {
-        String title = "404 error";
-        String notes = "URL: " + url + " AUTH: " + authenticated;
-
-        //checking if we've seen this bug before
+    public int standardBugReport(String title, String notes) {
         String findSimilarBugsSql = "SELECT * FROM bugs WHERE title=? AND notes=?";
 
         try {
@@ -58,9 +54,9 @@ public class BugDataAccessService implements BugDao {
                         title,
                         notes
                 );
-                return bugs.get(0).getCount(); //returns the amount of times this bug has been reported before this occurence
+                return bugs.get(0).getCount(); //returns the amount of times this bug has been reported before this occurrence
             }
-        } catch(SQLException ignored) {}
+        } catch(Exception ignored) {}
 
         //creating a new bug report
         String newBugSql = "INSERT INTO bugs (title, notes) VALUES (?, ?)";
@@ -76,5 +72,29 @@ public class BugDataAccessService implements BugDao {
             return -1;
         }
 
+    }
+
+    /**
+     * adds a new 404 bug into the database of bugs
+     *
+     * @param url url that the 404 happened at
+     * @param authenticated whether or not the user authenticated at the time
+     * @return -1 for error, 0 for unique bug, else returns the number of times this has been reported
+     */
+    @Override
+    public int report404Error(String url, boolean authenticated) {
+        String title = "404 error";
+        String notes = "URL: " + url + " AUTH: " + authenticated;
+
+        return standardBugReport(title, notes);
+
+    }
+
+    @Override
+    public int reportSettingsFormError(String url, boolean authenticated) {
+        String title = "Error in account settings form";
+        String notes = "URL: " + url + " AUTH: " + authenticated;
+
+        return standardBugReport(title, notes);
     }
 }

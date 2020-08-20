@@ -1,5 +1,5 @@
 import React from 'react'
-import { Grid, Typography, Snackbar } from '@material-ui/core'
+import { Grid, Typography } from '@material-ui/core'
 import { green } from '@material-ui/core/colors'
 import { GlobalContext } from '../context/GlobalState'
 import PlainSnackbar from './Snackbars/PlainSnackbar'
@@ -33,15 +33,13 @@ function Error(props) {
         const body = await response.text()
         try {
             setBugValue(JSON.parse(body))
-            setTimeout(() => {
-                props.history.goBack()
-            }, 2500)
         } catch (e) {
             console.log(e)
-            setTimeout(() => {
-                props.history.goBack() //sending user back to last page
-            }, 2500)
         }
+
+        setTimeout(() => {
+            props.history.goBack() //sending user back to last page
+        }, 2500)
 
     }
 

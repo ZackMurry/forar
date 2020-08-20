@@ -14,18 +14,17 @@ export default function PlainSnackbar ({ message, duration, value, onClose }) {
                 vertical: 'bottom',
                 horizontal: 'left'
             }}
-            >
-                <SnackbarContent style={{backgroundColor: green[500]}} message={message} 
-                    action={
-                        <React.Fragment>
-                            <IconButton size='small' aria-label="close" color="inherit" onClick={onClose}>
-                                <CloseIcon fontSize='small' />
-                            </IconButton>
-                        </React.Fragment>
-                    }
-                    
-                    />
-            </Snackbar>
+        >
+            <SnackbarContent style={{backgroundColor: green[500]}} message={message} 
+                action={
+                    <React.Fragment>
+                        <IconButton size='small' aria-label="close" color="inherit" onClick={onClose}>
+                            <CloseIcon fontSize='small' />
+                        </IconButton>
+                    </React.Fragment>
+                }   
+            />
+        </Snackbar>
     )
 
 

@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { GlobalContext } from '../context/GlobalState'
-import { Button, MenuItem } from '@material-ui/core'
+import { MenuItem } from '@material-ui/core'
 import { withCookies} from 'react-cookie';
 
 function LogInOutButton(props) {

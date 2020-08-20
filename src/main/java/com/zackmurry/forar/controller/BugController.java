@@ -18,6 +18,12 @@ public class BugController {
     @Autowired
     private BugService bugService;
 
+    /**
+     * for reporting 404 errors on the website
+     *
+     * @param map the JSON object padded in, containing the url it occurred at and whether the user was authenticated at the time
+     * @return the amount of times it has been reported before this. -1 for error
+     */
     @PostMapping("/404")
     public int report404Error(@RequestBody Map<String, String> map) {
         String url = map.get("url");
@@ -27,9 +33,10 @@ public class BugController {
 
 
     @PostMapping("/account-settings-form-error")
-    public void reportSettingsFormError(@RequestBody Map<String, String> map) {
+    public int reportSettingsFormError(@RequestBody Map<String, String> map) {
         String url = map.get("url");
         boolean authenticated = map.get("authenticated").equals("true");
+        return bugService.reportSettingsFormError(url, authenticated);
     }
 
 }

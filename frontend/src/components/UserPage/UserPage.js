@@ -32,38 +32,36 @@ function UserPage () {
 
     useEffect(() => {
         async function getData() {
-            if (!user) {
-                //todo probly make snackbars for if these fail using try catches
-
-                const userResponse = await fetch('/api/v1/users/email/' + email)
-                const userBody = await userResponse.text()
-                const userParsed = JSON.parse(userBody)
-                if(userBody) {
-                    setUser(userParsed)
-                } else console.log('set user failed')
+            //todo probly make snackbars for if these fail using try catches
+            const userResponse = await fetch('/api/v1/users/email/' + email)
+            const userBody = await userResponse.text()
+            const userParsed = JSON.parse(userBody)
+            if(userBody) {
+                setUser(userParsed)
+            } else console.log('set user failed')
                 
-                const dislikedResponse = await fetch('/api/v1/likes/user/' + email + '/dislikes')
-                const dislikedBody = await dislikedResponse.text()
-                if(dislikedBody) {
-                    setDislikedPosts(JSON.parse(dislikedBody))
-                } else console.log('set disliked posts failed')
+            const dislikedResponse = await fetch('/api/v1/likes/user/' + email + '/dislikes')
+            const dislikedBody = await dislikedResponse.text()
+            if(dislikedBody) {
+                setDislikedPosts(JSON.parse(dislikedBody))
+            } else console.log('set disliked posts failed')
 
-                const likedResponse = await fetch('/api/v1/likes/user/' + email + '/likes')
-                const likedBody = await likedResponse.text()
-                if(likedBody) {
-                    setLikedPosts(JSON.parse(likedBody))
-                } else console.log('set liked posts failed')
+            const likedResponse = await fetch('/api/v1/likes/user/' + email + '/likes')
+            const likedBody = await likedResponse.text()
+            if(likedBody) {
+                setLikedPosts(JSON.parse(likedBody))
+            } else console.log('set liked posts failed')
+            
+            const postsResponse = await fetch('/api/v1/users/email/' + email + '/posts')
+            const postsBody = await postsResponse.text()
+            if(postsBody) {
+                setPosts(JSON.parse(postsBody))  
+            } else console.log('set posts failed')
 
-                const postsResponse = await fetch('/api/v1/users/email/' + email + '/posts')
-                const postsBody = await postsResponse.text()
-                if(postsBody) {
-                    setPosts(JSON.parse(postsBody))  
-                } else console.log('set posts failed')
-
-                
-            }
         }
-        getData()
+        if(!user) {
+            getData()
+        }
       }, [user, setUser, posts, setPosts, likedPosts, setLikedPosts, dislikedPosts, setDislikedPosts, email]
     );
 
@@ -85,7 +83,7 @@ function UserPage () {
                         component='pre'
                         style={{textDecoration: 'underline', textDecorationColor: green[700], paddingLeft: '3vh'} /* underline the same as avatar color? */}
                     >
-                        {user.username ? user.username : '              ' + ' '}
+                        {user.username ? user.username : '               '}
                     </Typography> 
 
             </Grid>

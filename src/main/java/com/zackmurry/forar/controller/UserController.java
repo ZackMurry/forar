@@ -63,8 +63,6 @@ public class UserController {
 
     @RequestMapping(value = "/current/settings", method = RequestMethod.OPTIONS)
     public boolean updateUserSettings(@AuthenticationPrincipal OidcUser principal, @RequestBody Map<String, String> map) {
-        System.out.println("submit");
-        System.out.println("map = " + map);
         String email = principal.getEmail();
         String name = map.get("username");
         String bio = map.get("bio");

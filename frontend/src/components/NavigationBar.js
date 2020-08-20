@@ -1,11 +1,10 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom';
-import { Button, Toolbar, ThemeProvider, MenuList, MenuItem } from '@material-ui/core'
+import { Toolbar, ThemeProvider } from '@material-ui/core'
 import {AppBar, Typography } from '@material-ui/core'
 import  {theme} from './../theme'
 import { GlobalContext } from '../context/GlobalState';
 import NavigationBarMenu from './NavigationBarMenu';
-import LogInOutButton from './LogInOutButton';
 
 var Logo = './ForarIconWhite.png' //todo change this to a non-copywrited image if i wanna host
 
