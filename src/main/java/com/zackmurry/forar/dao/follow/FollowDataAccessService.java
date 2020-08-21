@@ -96,4 +96,20 @@ public class FollowDataAccessService implements FollowDao {
         }
 
     }
+
+    @Override
+    public List<String> getFollowingEmailsByUser(String email) {
+        String sql = "SELECT * FROM follows WHERE follower_email=?";
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    resultSet -> resultSet.getString(3), //3rd column is following_email
+                    email
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
 }

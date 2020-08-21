@@ -45,6 +45,7 @@ public class ForarRestController {
     @Autowired
     private PostRepository postRepository;
 
+    private final ClientRegistration registration;
 
     @Autowired
     public ForarRestController(ClientRegistrationRepository registrations) {
@@ -67,17 +68,10 @@ public class ForarRestController {
     }
 
 
-    @GetMapping("/authenticateUser")
-    public boolean authenticateUser(@RequestBody ProtoUser protoUser) { //todo doesn't work. maybe make this an anonymous chat w pseudo names
-        System.out.println(protoUser.getUsername() + "; " + protoUser.getPassword());
-        return true;
-    }
 
-    private ClientRegistration registration;
 
     @GetMapping("/account/create")
     public String createUser(@AuthenticationPrincipal OidcUser user) {
-        System.out.println(user);
         return "test for rn";
     }
 
@@ -123,19 +117,15 @@ public class ForarRestController {
 
     @PostMapping("/posts")
     public ResponseEntity<Post> addPost(@Valid @RequestBody Post post, @AuthenticationPrincipal OAuth2User principal) throws URISyntaxException {
-        System.out.println("request to create post with title " + post.getTitle() + " with body " + post.getBody() + ".");
         Map<String, Object> details = principal.getAttributes();
         String userId = details.get("sub").toString();
-        System.out.println("UID: " + userId);
 
         //check to see if user already exists
         Optional<User> user = userRepository.findUserByUsername(userId);
         if(user.isPresent()) {
-            System.out.println("user exists");
             post.setUsername(user.get().getUsername());
         }
         else {
-            System.out.println("user doesn't exist");
             post.setUsername(userId);
         }
 

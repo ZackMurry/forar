@@ -19,6 +19,7 @@ class NavigationBar extends React.Component {
       loginRedirect: null,
       isAuthenticated: false
     }
+    this.redirectToFollowing = this.redirectToFollowing.bind(this)
   }
 
 
@@ -27,8 +28,7 @@ class NavigationBar extends React.Component {
     this.setState({homePageRedirect: false})
     const response = await fetch('/api/v1/user');
     const body = await response.text();
-    console.log(body)
-    console.log(response)
+    
     const { authenticated, setAuthenticated, setUsername, setEmail } = this.context
 
     if (body === ' ' || body === null) {
@@ -57,35 +57,49 @@ class NavigationBar extends React.Component {
 
   }
 
+  redirectToHome() {
+    window.location.href = window.location.origin
+  }
 
-  
-
-
-
+  redirectToFollowing() {
+    //redirects to following if authenticated. else redirects to login page
+    console.log('going to following')
+    window.location.href = window.location.origin + this.state.isAuthenticated ? '/#/following' : '/oauth2/authorization/okta'
+  }
 
   render() {
-    const style = {
-      flexGrow: 1,
-      color: '#ffffff',
-      marginLeft: 6,
-      marginRight: 6
-    }
-
-    
 
     return (
       <ThemeProvider theme={theme}>
         <div>
           <AppBar position="static" style={{minHeight: '7vh'}}>
-            <Toolbar>
+            <Toolbar style={{display: 'flex', justifyContent: 'space-between'}} >
               {/* todo align button in the middle (vertically) */}
-              <button style={{backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', position: 'relative', top: '50%', transform: 'translateY(+6.25%)'}}>
-                {/* redirect only works because it's origin is the home page */}
-                <img src={Logo} style={{paddingRight: 10}} alt="icon-white" onClick={() => window.location.href = window.location.origin}/>
-              </button>
-              <Typography variant="h4" style={style}>
-                Forar
-              </Typography>
+              <div style={{display: 'inline-flex'}} >
+                <button style={{backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', position: 'relative', top: '50%', transform: 'translateY(+6.25%)'}}>
+                  {/* redirect only works because it's origin is the home page */}
+                  <img src={Logo} style={{paddingRight: 10}} alt="icon-white" onClick={() => window.location.href = window.location.origin}/>
+                </button>
+                <Typography variant="h4" style={{flexGrow: 1, color: '#ffffff', marginLeft: 6, marginRight: 6, alignSelf: 'center'}}>
+                  Forar
+                </Typography>
+              </div>
+              
+              <div style={{alignSelf: 'center', flexGrow: 1, cursor: 'pointer', color: '#fff', display: 'flex', marginLeft: '35%', width: '10%'}} >
+                <div style={{marginRight: '2%'}} onClick={this.redirectToHome.bind()} >
+                  <Typography style={{textAlign: 'center'}} >
+                    Home
+                  </Typography>
+                </div>
+                
+                <div style={{marginLeft: '2%'}} onClick={this.redirectToFollowing.bind()}>
+                  <Typography style={{textAlign: 'center'}} >
+                    Following
+                  </Typography> 
+                </div>
+                
+              </div>
+              
               <NavigationBarMenu />
             </Toolbar>
           </AppBar>

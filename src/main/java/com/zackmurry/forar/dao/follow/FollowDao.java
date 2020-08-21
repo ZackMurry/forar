@@ -12,4 +12,6 @@ public interface FollowDao {
 
     List<String> getFollowerEmailsByUser(String email);
 
+    List<String> getFollowingEmailsByUser(String email);
+
 }

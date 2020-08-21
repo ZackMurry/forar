@@ -5,6 +5,7 @@ import com.zackmurry.forar.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,5 +28,16 @@ public class FollowService {
 
     public List<String> getFollowerEmailsByUser(String email) {
         return followDao.getFollowerEmailsByUser(email);
+    }
+
+    /**
+     * gets a list of emails which user is following
+     *
+     * @param email email of user to query for
+     * @return a list of emails that the user is following
+     */
+    public List<String> getFollowingEmailsByUser(String email) {
+        //todo implement
+        return followDao.getFollowingEmailsByUser(email);
     }
 }

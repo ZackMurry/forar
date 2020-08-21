@@ -8,32 +8,40 @@ import green from '@material-ui/core/colors/green'
 import ToggleIcon from '../ToggleIcon'
 import { GlobalContext } from '../../context/GlobalState'
 
-export default function FollowButton ({ email }) {
+//todo update all other follow buttons with the same email on following change
+export default function PostFollowButton ({ email }) {
 
-    const [ following, setFollowing ] = React.useState(false)
+    const [ following, setFollowing ] = React.useState('')
     const [ hovering, setHovering ] = React.useState(false) //for changing icon on hover to allow for unfollowing
+    const mounted = React.useRef(true)
+
     const { authenticated } = useContext(GlobalContext)
 
     useEffect(() => {
-        async function getData() {
-            if(authenticated) {
-                //getting if the principal follows the user
-                const followResponse = await fetch('/api/v1/follows/user/follows/' + email)
-                const followBody = await followResponse.text()
-                try {
-                    setFollowing(JSON.parse(followBody))
-                } catch (e) {
-                    console.log(e)
-                }
-            }
+        function getData() {
+            //getting if the principal follows the user
+            fetch('/api/v1/follows/user/follows/' + email)
+                .then(response => response.text())
+                .then(body => mounted.current ? handleGetFollowing(body) : body)
+                .catch(err => console.log(err))
         }
-        getData()
+        if(authenticated && following === '' && mounted.current) getData()
         
 
-        }, [ following, setFollowing, authenticated, email ]
+        }, [ following, setFollowing, authenticated, email, mounted ]
     )
 
+    useEffect(() => {
+        return () => mounted.current = false
+    }, [])
+
+    const handleGetFollowing = async (body) => {
+        if(!mounted.current) return;
+        setFollowing(JSON.parse(body))
+    }
+
     const handleFollowButton = async () => {
+        if(!mounted.current)
         setFollowing(true)
 
         //telling the server to add it to the database
@@ -43,16 +51,18 @@ export default function FollowButton ({ email }) {
         const body = await response.text()
         try {
             //if the API returned false, it didn't work
-            if(!JSON.parse(body)) setFollowing(false)
+            if(!JSON.parse(body) && mounted.current) setFollowing(false)
         } catch (e) {
             //catching is usually used for if the API didn't send a response back at all
-            setFollowing(false)
+            if(mounted.current) setFollowing(false)
             console.log(e)
         }
 
     }
 
     const handleUnfollowButton = async () => {
+        if(!mounted.current) return;
+
         setFollowing(false)
 
         //now telling the server
@@ -62,7 +72,7 @@ export default function FollowButton ({ email }) {
         const body = await response.text()
         try {
             //if the API returned false, set the following value back to true
-            if(!JSON.parse(body)) setFollowing(true)
+            if(!JSON.parse(body) && mounted.current) setFollowing(true)
         } catch (e) {
             console.log(e)
         }
@@ -75,6 +85,8 @@ export default function FollowButton ({ email }) {
     const disableHover = () => {
         setHovering(false)
     }
+
+    
 
     return (
         <div onMouseEnter={enableHover} onMouseLeave={disableHover}>

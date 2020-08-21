@@ -18,24 +18,22 @@ export default function FollowButton ({ user }) {
 
     useEffect(() => {
         async function getData() {
-            if(authenticated) {
-                //calling api to see if following
-                const response = await fetch('/api/v1/follows/user/follows/' + user.email)
-                const body = await response.text()
-                try {
-                    if(JSON.parse(body)) {
-                        console.log(body)
-                        setFollowing(true)
-                    }
-                } catch (e) {
-                    console.log(e)
+            //calling api to see if following
+            const response = await fetch('/api/v1/follows/user/follows/' + user.email)
+            const body = await response.text()
+            try {
+                if(JSON.parse(body)) {
+                    console.log(body)
+                    setFollowing(true)
                 }
+            } catch (e) {
+                console.log(e)
             }
-            setGotData(true)
         }
-        if(!gotData) {
+
+        if(!gotData && authenticated) {
             getData()
-        }
+        } else if (authenticated) setGotData(true)
         
 
         }, [ following, setFollowing, authenticated, gotData, setGotData, user.email ]

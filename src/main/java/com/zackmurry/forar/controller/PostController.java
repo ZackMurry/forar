@@ -1,6 +1,7 @@
 package com.zackmurry.forar.controller;
 
 import com.zackmurry.forar.models.Post;
+import com.zackmurry.forar.services.FollowService;
 import com.zackmurry.forar.services.LikeService;
 import com.zackmurry.forar.services.PostService;
 import org.json.JSONObject;
@@ -25,12 +26,16 @@ public class PostController {
     @Autowired
     private LikeService likeService;
 
+    @Autowired
+    private FollowService followService;
+
     private static final int MAX_TITLE_LENGTH = 400;
     private static final int MAX_BODY_LENGTH = 5000;
 
 
     @PostMapping("/create")
     public boolean createPost(@RequestBody Map<String, String> map, @AuthenticationPrincipal OidcUser principal) {
+        if(principal == null) return false;
         if(map.get("title").length() > MAX_TITLE_LENGTH || map.get("body").length() > MAX_BODY_LENGTH) return false;
         postService.createPost(new Post(map.get("title"), map.get("body"), principal.getGivenName() + " " + principal.getFamilyName(), principal.getEmail()));
         return true;
@@ -44,7 +49,6 @@ public class PostController {
     //using a list of posts even though im just returning one. it's so that i can return an empty list
     @GetMapping("/id/{id}")
     public List<Post> getPostById(@PathVariable("id") String id) {
-
         try {
             int intId = Integer.parseInt(id);
 
@@ -60,6 +64,7 @@ public class PostController {
 
     @DeleteMapping("/id/{id}")
     public boolean deletePostById(@PathVariable("id") String id, @AuthenticationPrincipal OidcUser principal) {
+        if(principal == null) return false;
         try {
             int intId = Integer.parseInt(id);
 
@@ -77,6 +82,16 @@ public class PostController {
             e.printStackTrace();
             return false;
         }
+
+    }
+
+    @GetMapping("/following/recent")
+    public List<Post> getNewestPostsByUsersFollowedByUser(@AuthenticationPrincipal OidcUser principal) {
+        if(principal == null) return new ArrayList<>();
+        String email = principal.getEmail();
+        if(email == null) return new ArrayList<>();
+        List<String> emailsOfFollowing = followService.getFollowingEmailsByUser(email);
+        return postService.getMostRecentPostsByUsers(emailsOfFollowing);
 
     }
 

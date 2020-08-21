@@ -33,6 +33,8 @@ public class LikeController {
      */
     @GetMapping("/post/{id}")
     public int userLikesPost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return 0;
+
         //getting email from principal
         String email = principal.getEmail();
 
@@ -55,6 +57,8 @@ public class LikeController {
      */
     @PostMapping("/post/{id}/like")
     public boolean likePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return false;
+
         String email = principal.getEmail();
 
         //checking if the user already likes the post. this is handled on the frontend
@@ -83,6 +87,8 @@ public class LikeController {
 
     @PostMapping("/post/{id}/dislike")
     public boolean dislikePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return false;
+
         String email = principal.getEmail();
 
         if(userLikesPost(principal, postId) != 0) {
@@ -108,6 +114,8 @@ public class LikeController {
 
     @DeleteMapping("/post/{id}/like")
     public boolean unlikePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return false;
+
         String email = principal.getEmail();
 
         if(userLikesPost(principal, postId) != 1) {
@@ -138,6 +146,8 @@ public class LikeController {
 
     @DeleteMapping("/post/{id}/dislike")
     public boolean undislikePost(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return false;
+
         String email = principal.getEmail();
 
         if(userLikesPost(principal, postId) != -1) {
@@ -163,6 +173,8 @@ public class LikeController {
 
     @PutMapping("/post/{id}/like")
     public boolean changeDislikeToLike(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return false;
+
         String email = principal.getEmail();
 
         if(userLikesPost(principal, postId) != -1) {
@@ -188,6 +200,8 @@ public class LikeController {
 
     @PutMapping("/post/{id}/dislike")
     public boolean changeLikeToDislike(@AuthenticationPrincipal OidcUser principal, @PathVariable("id") String postId) {
+        if(principal == null) return false;
+
         String email = principal.getEmail();
 
         if(userLikesPost(principal, postId) != 1) {

@@ -33,7 +33,6 @@ public class UserController {
 
     @GetMapping("/email/{email}")
     public User getUserByEmail(@PathVariable("email") String email) {
-        System.out.println(email);
         return userService.findUserByEmail(email);
     }
 
@@ -51,6 +50,7 @@ public class UserController {
     //todo add method for admin
     @PostMapping("/bio")
     public boolean setUserBio(@RequestBody Map<String, String> map, @AuthenticationPrincipal OidcUser principal) {
+        if(principal == null) return false;
         String newBio = map.get("bio");
         String email = principal.getEmail();
         return userService.setBio(newBio, email);
@@ -58,11 +58,13 @@ public class UserController {
 
     @GetMapping("/current")
     public User getCurrentUser(@AuthenticationPrincipal OidcUser principal) {
+        if(principal == null) return new User("401", "unauthenticated");
         return userService.findUserByEmail(principal.getEmail());
     }
 
     @RequestMapping(value = "/current/settings", method = RequestMethod.OPTIONS)
     public boolean updateUserSettings(@AuthenticationPrincipal OidcUser principal, @RequestBody Map<String, String> map) {
+        if(principal == null) return false;
         String email = principal.getEmail();
         String name = map.get("username");
         String bio = map.get("bio");

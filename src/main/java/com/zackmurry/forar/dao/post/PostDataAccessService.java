@@ -20,6 +20,7 @@ import java.util.*;
 public class PostDataAccessService implements PostDao {
 
     private final JdbcTemplate jdbcTemplate;
+    public static int POST_LOAD_LIMIT = 100;
 
     @Autowired
     public PostDataAccessService(DataSource dataSource) throws SQLException {
@@ -80,7 +81,7 @@ public class PostDataAccessService implements PostDao {
 
     @Override
     public List<Post> getRecentPosts() {
-        String sql = "SELECT * FROM posts ORDER BY time_created DESC LIMIT 100";
+        String sql = "SELECT * FROM posts ORDER BY time_created DESC LIMIT " + POST_LOAD_LIMIT;
         try {
             return jdbcTemplate.query(
                     sql,
@@ -102,7 +103,7 @@ public class PostDataAccessService implements PostDao {
 
     @Override
     public List<Post> getPostsByEmail(String email) {
-        String sql = "SELECT * FROM posts WHERE user_email=? ORDER BY time_created DESC";
+        String sql = "SELECT * FROM posts WHERE user_email=? ORDER BY time_created DESC LIMIT " + POST_LOAD_LIMIT;
         try {
             return jdbcTemplate.query(
                     sql,
@@ -244,7 +245,7 @@ public class PostDataAccessService implements PostDao {
         if(ids.size() == 0) return new ArrayList<>(); //at size() == 0, the SQL wouldn't be valid and there'd be no elements anyways
         String questionMarks = String.join(",", Collections.nCopies(ids.size(), "?"));
 
-        String sql = String.format("SELECT * FROM posts WHERE id IN (%s)", questionMarks);
+        String sql = String.format("SELECT * FROM posts WHERE id IN (%s) LIMIT %d", questionMarks, POST_LOAD_LIMIT);
 
         try {
             return jdbcTemplate.query(
@@ -265,6 +266,33 @@ public class PostDataAccessService implements PostDao {
             return new ArrayList<>();
         }
 
+    }
+
+    @Override
+    public List<Post> getMostRecentPostsByUsers(List<String> userEmails) {
+        if(userEmails.size() == 0) return new ArrayList<>(); //at size() == 0, the SQL wouldn't be valid and there'd be no elements anyways
+        String questionMarks = String.join(",", Collections.nCopies(userEmails.size(), "?"));
+
+        String sql = String.format("SELECT * FROM posts WHERE user_email IN (%s) ORDER BY time_created DESC LIMIT %d", questionMarks, POST_LOAD_LIMIT);
+
+        try {
+            return jdbcTemplate.query(
+                    sql,
+                    resultSet -> new Post(
+                            resultSet.getInt(1),
+                            resultSet.getString(2),
+                            resultSet.getString(3),
+                            resultSet.getInt(4),
+                            resultSet.getString(5),
+                            resultSet.getString(6),
+                            new Date(resultSet.getTimestamp(7).getTime())
+                    ),
+                    userEmails.toArray()
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
     }
 
 }

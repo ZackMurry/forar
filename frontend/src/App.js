@@ -15,6 +15,7 @@ import UserPage from './components/UserPage/UserPage'
 import PostPage from './components/Posts/PostPage'
 import AccountSettings from './components/Account/AccountSettings'
 import FollowerPage from './components/UserPage/Followers/FollowerPage'
+import FollowingPage from './components/FollowPage'
 
 /*const config = {
   issuer: 'http://localhost:8080/login/oauth2/code/okta',
@@ -22,6 +23,7 @@ import FollowerPage from './components/UserPage/Followers/FollowerPage'
   client_id: '0oaolzlceKJBBmFQL4x6'
 };*/
 
+//defo shoulda used next.js
 function App() {
 
 
@@ -47,6 +49,7 @@ function App() {
                 <Route path="/users/:email/followers" component={FollowerPage} />
                 <Route path="/users/:email" component={UserPage} />
                 <Route path="/posts/:id" component={PostPage} />
+                <Route path="/following" component={FollowingPage} exact/>
                 <Route component={Error} />
               </Switch>
             </main>

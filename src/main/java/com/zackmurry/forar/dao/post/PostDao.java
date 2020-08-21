@@ -33,4 +33,6 @@ public interface PostDao {
 
     List<Post> getPostsFromIdList(List<Integer> ids);
 
+    List<Post> getMostRecentPostsByUsers(List<String> userEmails);
+
 }

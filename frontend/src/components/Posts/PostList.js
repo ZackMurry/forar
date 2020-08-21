@@ -11,17 +11,23 @@ export default class PostList extends React.Component {
         super()
         this.state = {
             list: [],
-            showSnackbar: false
+            showSnackbar: false,
+            mounted: true
         }
         this.updateList = this.updateList.bind(this)
     }
 
+    
     componentDidMount() {
         this.updateList()
     }
 
+    componentWillUnmount() {
+        this.setState({mounted: false})
+    }
+
     updateList = async () => {
-        console.log(this.state.showSnackbar)
+        if(!this.state.mounted) return;
         const response = await (await fetch('/api/v1/posts/new')).text()
         try {
             this.setState({list: JSON.parse(response)})

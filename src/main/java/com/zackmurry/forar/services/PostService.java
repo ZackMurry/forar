@@ -65,4 +65,9 @@ public class PostService {
     public List<Post> getPostsFromIdList(List<Integer> ids) {
         return postDao.getPostsFromIdList(ids);
     }
+
+    public List<Post> getMostRecentPostsByUsers(List<String> userEmails) {
+        return postDao.getMostRecentPostsByUsers(userEmails);
+    }
+
 }

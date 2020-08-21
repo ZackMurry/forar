@@ -37,6 +37,7 @@ public class FollowController {
      */
     @GetMapping("/user/follows/{followingEmail}")
     public boolean authFollowsUser(@AuthenticationPrincipal OidcUser principal, @PathVariable("followingEmail") String followingEmail) {
+        if(principal == null) return false;
         String principalEmail = principal.getEmail();
         if(principalEmail.equals("") || followingEmail.equals("")) return false;
         return followService.userFollowsUser(principalEmail, followingEmail);
@@ -50,6 +51,8 @@ public class FollowController {
      */
     @PostMapping("/follow/{followingEmail}")
     public boolean followUser(@AuthenticationPrincipal OidcUser principal, @PathVariable("followingEmail") String emailToFollow) {
+        if(principal == null) return false;
+
         String principalEmail = principal.getEmail();
 
         //check if both emails have accounts registered to them
@@ -70,6 +73,7 @@ public class FollowController {
     //todo will need to make these methods for admins too
     @DeleteMapping("/follow/{followingEmail}")
     public boolean unfollowUser(@AuthenticationPrincipal OidcUser principal, @PathVariable("followingEmail") String emailToUnfollow) {
+        if(principal == null) return false;
         String principalEmail = principal.getEmail();
         //if the user doesn't already follow the user, return false
         if(!followService.userFollowsUser(principalEmail, emailToUnfollow)) return false;
