@@ -3,6 +3,7 @@ import Typography from '@material-ui/core/Typography'
 import {Link} from 'react-router-dom'
 import green from '@material-ui/core/colors/green'
 
+//todo replace 21 with real number and add following
 export default function UserProfileStats ({ user }) {
 
     return (

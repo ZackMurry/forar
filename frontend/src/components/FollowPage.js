@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { GlobalContext } from '../context/GlobalState'
 import Post from './Posts/Post'
+import { Fade, Grow, Typography } from '@material-ui/core'
 
-//todo finish this up
 export default function FollowPage() {
 
     const [ recentFollowingPosts, setRecentFollowingPosts ] = useState('default')
@@ -45,14 +45,31 @@ export default function FollowPage() {
                 ?
                     recentFollowingPosts.length !== 0
                         ?
-                            recentFollowingPosts.map(post => (
-                                <Post post={post} updateList={updateList} showSnackbar={console.log('snack')} key={post.id}/>
-                            ))
+                            <Grow in={true} timeout={1000}>
+                                <div>
+                                    {recentFollowingPosts.map(post => (
+                                        <Post post={post} updateList={updateList} showSnackbar={console.log('snack')} key={post.id}/>
+                                    ))}
+                                </div>
+                            </Grow>
+                            
                         :
-                            <p>There are no recent posts from people you follow</p> //todo style
+                            <Fade in={true} timeout={500}>
+                                    <div style={{textAlign: 'center', margin: '10%'}}>
+                                    <Typography variant='h4' style={{color: '#757575'}}>
+                                        There are no recent posts from people you follow.
+                                    </Typography>
+                                </div>
+                            </Fade>
                     
                 :
-                    <p>Loading..</p> //todo style
+                    <Fade in={true} timeout={2500}>
+                        <div style={{textAlign: 'center', margin: '10%'}}>
+                            <Typography variant='h4' style={{color: '#757575'}}>
+                                Loading...
+                            </Typography>
+                        </div>
+                    </Fade>
             }
         </>
         

@@ -7,12 +7,11 @@ import { theme } from '../theme';
 import LogInOutButton from './LogInOutButton';
 import { GlobalContext } from '../context/GlobalState'
 
-//todo remove logged in as if user is logged out
 function NavigationBarMenu() {
 
     const [ open, setOpen ] = useState(false)
     const anchorRef = React.useRef(null);
-    const { username } = useContext(GlobalContext)
+    const { username, authenticated } = useContext(GlobalContext)
 
     const toggleOpen = () => {
         setOpen(!open)
@@ -51,7 +50,7 @@ function NavigationBarMenu() {
                                 <MenuList autoFocusItem={open} id="menu-list-grow" style={{backgroundColor: green[500], color: 'white', marginTop: 6}}>
                                     <Paper elevation={0} style={{background: green[500], color: '#fff', marginTop: 0, cursor: 'default', outline: 'none', userSelect: 'none'}} >
                                         <Typography style={{textAlign: 'center'}}  >
-                                            Logged in as { username }
+                                            {authenticated ? `Logged in as ${username}` : 'Logged out'}
                                         </Typography>
                                     </Paper>
                                     

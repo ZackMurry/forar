@@ -74,7 +74,6 @@ class NavigationBar extends React.Component {
         <div>
           <AppBar position="static" style={{minHeight: '7vh'}}>
             <Toolbar style={{display: 'flex', justifyContent: 'space-between'}} >
-              {/* todo align button in the middle (vertically) */}
               <div style={{display: 'inline-flex'}} >
                 <button style={{backgroundColor: 'transparent', border: 'none', outline: 'none', cursor: 'pointer', position: 'relative', top: '50%', transform: 'translateY(+6.25%)'}}>
                   {/* redirect only works because it's origin is the home page */}

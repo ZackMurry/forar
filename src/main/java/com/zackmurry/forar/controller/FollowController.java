@@ -98,6 +98,14 @@ public class FollowController {
     }
 
 
+    @GetMapping("/user/{userEmail}/following")
+    public List<User> getFollowingByUser(@PathVariable("userEmail") String email) {
+        List<String> followingEmails = followService.getFollowingEmailsByUser(email);
+        if(followingEmails.size() == 0) return new ArrayList<>();
+        return userService.getUsersByEmails(followingEmails);
+    }
+
+
 
 
 

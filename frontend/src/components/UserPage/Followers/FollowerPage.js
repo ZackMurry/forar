@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router';
+import { Typography } from '@material-ui/core';
+import UserBar from '../../Users/UserBar';
 
+//todo make this look better and make a FollowingPage
 export default function FollowerPage() {
 
 
@@ -40,13 +43,16 @@ export default function FollowerPage() {
 
     return (
         <>
-            <p>{user ? JSON.stringify(user) : ''}</p>
+            <Typography variant='h2' style={{textAlign: 'center', marginTop: '3vh'}} >{user ? user.username + "'s followers" : ''}</Typography>
             <br />
-            {
-                followers.map((follower, i) => (
-                    <p key={i}>{JSON.stringify(follower)}</p>
-                ))
-            }
+            <div style={{display: 'flex', justifyContent: 'center'}} >
+                {
+                    followers.map((follower, i) => (
+                        <UserBar username={follower.username} key={i} />
+                    ))
+                }
+            </div>
+            
             
         </>
         

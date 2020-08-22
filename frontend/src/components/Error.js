@@ -10,7 +10,6 @@ const clickableTextStyle = {
     marginLeft: 6
 }
 
-//todo make this look better
 function Error(props) {
 
     const { authenticated } = React.useContext(GlobalContext)

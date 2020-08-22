@@ -226,7 +226,12 @@ export default function Post({ post, updateList, showSnackbar }) {
                         action={
                             post.email === email ? 
                             // todo post editing and put tooltips here
-                                <Edit style={{margin: 15, color: green[500]}} /> 
+                                <GreenTooltip title='Edit'>
+                                    <IconButton size='small'>
+                                        <Edit style={{margin: 15, color: green[500]}} /> 
+                                    </IconButton>
+                                </GreenTooltip>
+                                
                             : 
                                 <PostFollowButton email={post.email}/>
                         }

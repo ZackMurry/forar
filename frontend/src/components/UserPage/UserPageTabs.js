@@ -46,10 +46,28 @@ export default function UserPageTabs ({ likedPosts, posts, dislikedPosts }) {
           }
         },
         selected: {},
-      }))((props) => <Tab disableRipple {...props} />);
+    }))((props) => <Tab disableRipple {...props} />);
+
+
+    const getCurrentTabHeaderText = () => {
+        console.log(tabValue)
+        switch (tabValue) {
+            case 0:
+                return likedPosts.length + ' liked post' + (likedPosts.length !== 1 ? 's' : '')
+            case 1:
+                return posts.length + ' post' + (posts.length !== 1 ? 's' : '')
+            case 2:
+                return dislikedPosts.length + ' disliked post' + (dislikedPosts.length !== 1 ? 's' : '')
+            default:
+                return ''
+        }
+    }
 
     return (
         <>
+            <div style={{backgroundColor: green[500], width: '100%', height: 200, alignContent: 'center', alignItems: 'center'}}>
+                <Typography variant='h5' style={{marginTop: 100, color: '#fff', textAlign: 'center', paddingTop: 50}}>{ getCurrentTabHeaderText() }</Typography>
+            </div>
             <AppBar position='static' elevation={0}>
                 <Tabs
                     value={tabValue}
