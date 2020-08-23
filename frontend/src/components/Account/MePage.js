@@ -89,10 +89,6 @@ export default function MePage () {
                         
                         <Paper elevation={5} style={{paddingBottom: 500}}>
         
-                            <div style={{backgroundColor: green[500], width: '100%', height: 200, alignContent: 'center', alignItems: 'center'}}>
-                                <Typography variant='h5' style={{marginTop: 100, color: '#fff', textAlign: 'center', paddingTop: 50}}>Lorem ipsum</Typography>
-                            </div>
-        
                             <UserPageTabs posts={posts} likedPosts={likedPosts} dislikedPosts={dislikedPosts} />
                         </Paper>
                     </Paper>
