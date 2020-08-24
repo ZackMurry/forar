@@ -2,7 +2,7 @@
 A platform where you can share your thoughts through posts and comments.
 
 ## about
-Forar is just a simple social media site with posts, accounts, following, and liking. 
+Forar is a simple social media site with posts, accounts, following, and liking. 
 
 ![Image of home page](src/main/resources/static/images/readme/home_page.png)
 
