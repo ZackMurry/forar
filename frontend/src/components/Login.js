@@ -2,7 +2,6 @@ import React from 'react'
 import { Paper, Typography, Grid, Input, InputLabel, Button } from '@material-ui/core'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
-import axios from 'axios'
 
 var theme = createMuiTheme({
     palette: {
@@ -39,12 +38,14 @@ export default class Login extends React.Component {
         console.log(this.state.password)
     }
     
-    handleSubmit = () => {
+    handleSubmit = async () => {
         console.log('submit')
         console.log(this.state.username)
-        const response = axios.get('api/v1/authenticateUser',{
-                'username': this.state.username.value,
-                'password': this.state.password.value
+        const response = await fetch('/api/v1/authenticateUser',{
+            body: {
+                username: this.state.username,
+                password: this.state.password
+            }
         })
         console.log(response)
 
