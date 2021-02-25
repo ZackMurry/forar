@@ -1,5 +1,5 @@
 # forar
-A platform where you can share your thoughts through posts and comments.
+A prototype of a social media platform.
 
 ## about
 Forar is a simple social media site with posts, accounts, following, and liking. 
